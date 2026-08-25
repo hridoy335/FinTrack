@@ -1,11 +1,25 @@
+using FinTrackCore.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinTrackCore.Api.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class HealthController : ControllerBase
+[Route("api/[controller]s")]
+public class HealthController(AppDbContext dbContext) : JsonApiControllerBase
 {
     [HttpGet]
-    public IActionResult Get() => Ok(new { status = "Healthy", architecture = "Clean Architecture" });
+    public async Task<IActionResult> Get(CancellationToken cancellationToken)
+    {
+        var canConnect = await dbContext.Database.CanConnectAsync(cancellationToken);
+
+        return SendResponse(
+            StatusCodes.Status200OK,
+            string.Empty,
+            new
+            {
+                status = canConnect ? "Healthy" : "Degraded",
+                architecture = "Clean Architecture",
+                database = canConnect ? "Connected" : "Unavailable"
+            });
+    }
 }
