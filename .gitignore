@@ -1,0 +1,41 @@
+## Build
+bin/
+obj/
+out/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
+TestResults/
+[Cc]overage*/
+*.coverage
+*.coveragexml
+
+## Visual Studio / Rider / VS Code
+.vs/
+*.user
+*.userosscache
+*.suo
+*.rsuser
+*.DotSettings.user
+.idea/
+.vscode/
+
+## OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+## Secrets / local config
+appsettings.*.local.json
+*.pfx
+*.key
+.env
+.env.*
+!*.env.example
+
+## NuGet
+*.nupkg
+**/packages/*
+!**/packages/build/
+project.lock.json
+artifacts/
