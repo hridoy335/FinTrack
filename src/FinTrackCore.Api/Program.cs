@@ -5,6 +5,7 @@ using FinTrackCore.Application.Common.Models;
 using FinTrackCore.Infrastructure;
 using FinTrackCore.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,21 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1",
         Description = "FinTrackCore ASP.NET Core API (Clean Architecture)."
     });
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter JWT access token."
+    });
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
 });
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<AppDbContext>("postgresql");
@@ -75,6 +91,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health");

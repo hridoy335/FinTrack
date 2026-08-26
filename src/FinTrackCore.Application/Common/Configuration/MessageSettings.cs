@@ -15,4 +15,10 @@ public class MessageSettings
     public string InsertSuccess { get; set; } = "Data saved successfully.";
     public string UpdateSuccess { get; set; } = "Data updated successfully.";
     public string DeleteSuccess { get; set; } = "Data deleted successfully.";
+
+    public string LoginSuccess { get; set; } = "Login successful.";
+    public string LoginFailed { get; set; } = "Invalid username or password.";
+    public string LogoutSuccess { get; set; } = "Logged out successfully.";
+    public string TokenRefreshed { get; set; } = "Token refreshed successfully.";
+    public string InvalidRefreshToken { get; set; } = "Invalid or expired refresh token.";
 }
