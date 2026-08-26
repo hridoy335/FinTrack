@@ -32,7 +32,7 @@ public class UserInfoService : IUserInfoService
 
     public async Task<Outcome<MutationResult, HttpBadOutcome>> CreateAsync(
         CreateUserInfoRequest request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default)  
     {
         var userName = request.UserName.Trim();
         var email = request.Email.Trim().ToLowerInvariant();
