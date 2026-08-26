@@ -9,17 +9,17 @@ public sealed class RefreshTokenRepository(AppDbContext dbContext) : IRefreshTok
 {
     public async Task<RefreshToken?> GetActiveByTokenHashAsync(
         string tokenHash,
-        CancellationToken cancellationToken = default)
+        CancellationToken ct)
     {
         var now = DateTime.UtcNow;
 
-        var query =
-            from refreshToken in dbContext.RefreshTokens
-            where refreshToken.TokenHash == tokenHash
-                  && refreshToken.RevokedAt == null
-                  && refreshToken.ExpiresAt > now
-            select refreshToken;
-
-        return await query.FirstOrDefaultAsync(cancellationToken);
+        return await dbContext.RefreshTokens
+            .Include(x => x.UserInfo)
+            .FirstOrDefaultAsync(
+                x => x.TokenHash == tokenHash
+                     && x.IsActive
+                     && x.RevokedAt == null
+                     && x.ExpiresAt > now,
+                ct);
     }
 }

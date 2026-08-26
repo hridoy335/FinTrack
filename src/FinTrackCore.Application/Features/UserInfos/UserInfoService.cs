@@ -1,6 +1,8 @@
 using FinTrackCore.Application.Common.Configuration;
 using FinTrackCore.Application.Common.Models;
-using FinTrackCore.Application.Features.Users.Models;
+using FinTrackCore.Application.Constants;
+using FinTrackCore.Application.Features.Coas;
+using FinTrackCore.Application.Features.UserInfos.Models;
 using FinTrackCore.Application.Interfaces;
 using FinTrackCore.Domain.Entities;
 using FinTrackCore.Domain.Repositories;
@@ -9,40 +11,43 @@ using SharpOutcome;
 using SharpOutcome.Helpers;
 using SharpOutcome.Helpers.Enums;
 
-namespace FinTrackCore.Application.Features.Users;
+namespace FinTrackCore.Application.Features.UserInfos;
 
 public class UserInfoService : IUserInfoService
 {
     private readonly IUserInfoRepository _userInfoRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordService _passwordService;
+    private readonly IDefaultCoaSeedService _defaultCoaSeedService;
     private readonly MessageSettings _messages;
 
     public UserInfoService(
         IUserInfoRepository userInfoRepository,
         IUnitOfWork unitOfWork,
         IPasswordService passwordService,
+        IDefaultCoaSeedService defaultCoaSeedService,
         IOptions<MessageSettings> messageOptions)
     {
         _userInfoRepository = userInfoRepository;
         _unitOfWork = unitOfWork;
         _passwordService = passwordService;
+        _defaultCoaSeedService = defaultCoaSeedService;
         _messages = messageOptions.Value;
     }
 
     public async Task<Outcome<MutationResult, HttpBadOutcome>> CreateAsync(
         CreateUserInfoRequest request,
-        CancellationToken cancellationToken = default)  
+        CancellationToken ct)
     {
         var userName = request.UserName.Trim();
         var email = request.Email.Trim().ToLowerInvariant();
 
-        if (await _userInfoRepository.GetByUserNameAsync(userName, cancellationToken) is not null)
+        if (await _userInfoRepository.GetByUserNameAsync(userName, ct) is not null)
         {
             return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.Conflict);
         }
 
-        if (await _userInfoRepository.GetByEmailAsync(email, cancellationToken) is not null)
+        if (await _userInfoRepository.GetByEmailAsync(email, ct) is not null)
         {
             return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.Conflict);
         }
@@ -55,14 +60,16 @@ public class UserInfoService : IUserInfoService
             FirstName = request.FirstName.Trim(),
             LastName = string.IsNullOrWhiteSpace(request.LastName) ? null : request.LastName.Trim(),
             CurrencyCode = string.IsNullOrWhiteSpace(request.CurrencyCode)
-                ? "BDT"
+                ? CurrencyConstants.DefaultCurrencyCode
                 : request.CurrencyCode.Trim().ToUpperInvariant(),
             IsActive = true,
             CreatedDate = DateTime.UtcNow
         };
 
-        await _unitOfWork.AddAsync(userInfo, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.AddAsync(userInfo, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
+
+        await _defaultCoaSeedService.SeedForUserAsync(userInfo.Id, ct);
 
         return new MutationResult
         {
@@ -74,24 +81,20 @@ public class UserInfoService : IUserInfoService
     public async Task<Outcome<MutationResult, HttpBadOutcome>> UpdateAsync(
         long id,
         UpdateUserInfoRequest request,
-        CancellationToken cancellationToken = default)
+        CancellationToken ct)
     {
-        var userInfo = await _userInfoRepository.GetByIdAsync(id, cancellationToken);
-        if (userInfo is null)
-        {
-            return new HttpBadOutcome(HttpBadOutcomeTag.NotFound, _messages.NotFound);
-        }
+        var userInfo = await _userInfoRepository.GetByIdAsync(id, ct);
 
         var userName = request.UserName.Trim();
         var email = request.Email.Trim().ToLowerInvariant();
 
-        var existingByUserName = await _userInfoRepository.GetByUserNameAsync(userName, cancellationToken);
+        var existingByUserName = await _userInfoRepository.GetByUserNameAsync(userName, ct);
         if (existingByUserName is not null && existingByUserName.Id != id)
         {
             return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.Conflict);
         }
 
-        var existingByEmail = await _userInfoRepository.GetByEmailAsync(email, cancellationToken);
+        var existingByEmail = await _userInfoRepository.GetByEmailAsync(email, ct);
         if (existingByEmail is not null && existingByEmail.Id != id)
         {
             return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.Conflict);
@@ -102,7 +105,7 @@ public class UserInfoService : IUserInfoService
         userInfo.FirstName = request.FirstName.Trim();
         userInfo.LastName = string.IsNullOrWhiteSpace(request.LastName) ? null : request.LastName.Trim();
         userInfo.CurrencyCode = string.IsNullOrWhiteSpace(request.CurrencyCode)
-            ? "BDT"
+            ? CurrencyConstants.DefaultCurrencyCode
             : request.CurrencyCode.Trim().ToUpperInvariant();
         userInfo.IsActive = request.IsActive;
         userInfo.UpdatedDate = DateTime.UtcNow;
@@ -113,7 +116,7 @@ public class UserInfoService : IUserInfoService
         }
 
         _unitOfWork.Update(userInfo);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(ct);
 
         return new MutationResult
         {
@@ -124,13 +127,9 @@ public class UserInfoService : IUserInfoService
 
     public async Task<Outcome<UserInfoResponse, HttpBadOutcome>> GetByIdAsync(
         long id,
-        CancellationToken cancellationToken = default)
+        CancellationToken ct)
     {
-        var userInfo = await _userInfoRepository.GetByIdAsync(id, cancellationToken);
-        if (userInfo is null)
-        {
-            return new HttpBadOutcome(HttpBadOutcomeTag.NotFound, _messages.NotFound);
-        }
+        var userInfo = await _userInfoRepository.GetByIdAsync(id, ct);
 
         return new UserInfoResponse
         {

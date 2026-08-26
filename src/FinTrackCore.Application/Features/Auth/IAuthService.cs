@@ -9,5 +9,19 @@ public interface IAuthService
     Task<Outcome<LoginResponse, HttpBadOutcome>> LoginAsync(
         LoginRequest request,
         string? ipAddress,
-        CancellationToken cancellationToken = default);
+        CancellationToken ct);
+
+    Task<Outcome<LoginResponse, HttpBadOutcome>> GoogleAsync(
+        GoogleAuthRequest request,
+        string? ipAddress,
+        CancellationToken ct);
+
+    Task<Outcome<LoginResponse, HttpBadOutcome>> RefreshAsync(
+        RefreshRequest request,
+        string? ipAddress,
+        CancellationToken ct);
+
+    Task<Outcome<LogoutResponse, HttpBadOutcome>> LogoutAsync(
+        LogoutRequest request,
+        CancellationToken ct);
 }

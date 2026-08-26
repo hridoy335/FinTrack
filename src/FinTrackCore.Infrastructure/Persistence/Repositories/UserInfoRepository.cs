@@ -5,35 +5,35 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinTrackCore.Infrastructure.Persistence.Repositories;
 
-public sealed class UserInfoRepository(AppDbContext dbContext) : IUserInfoRepository
+public sealed class UserInfoRepository : IUserInfoRepository
 {
-    public async Task<UserInfo?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
-    {
-        var query =
-            from userInfo in dbContext.UserInfos
-            where userInfo.Id == id
-            select userInfo;
+    private readonly AppDbContext _dbContext;
 
-        return await query.FirstOrDefaultAsync(cancellationToken);
+    public UserInfoRepository(AppDbContext dbContext)
+    {
+        _dbContext = dbContext;
     }
 
-    public async Task<UserInfo?> GetByUserNameAsync(string userName, CancellationToken cancellationToken = default)
+    public async Task<UserInfo> GetByIdAsync(long id, CancellationToken ct)
     {
-        var query =
-            from userInfo in dbContext.UserInfos
-            where userInfo.UserName == userName
-            select userInfo;
+        var userInfo = await _dbContext.UserInfos
+            .FirstOrDefaultAsync(x => x.Id == id, ct);
 
-        return await query.FirstOrDefaultAsync(cancellationToken);
+        return userInfo ?? throw new KeyNotFoundException();
     }
 
-    public async Task<UserInfo?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+    public Task<UserInfo?> GetByUserNameAsync(string userName, CancellationToken ct)
     {
-        var query =
-            from userInfo in dbContext.UserInfos
-            where userInfo.Email == email
-            select userInfo;
+        return _dbContext.UserInfos.FirstOrDefaultAsync(x => x.UserName == userName, ct);
+    }
 
-        return await query.FirstOrDefaultAsync(cancellationToken);
+    public Task<UserInfo?> GetByEmailAsync(string email, CancellationToken ct)
+    {
+        return _dbContext.UserInfos.FirstOrDefaultAsync(x => x.Email == email, ct);
+    }
+
+    public Task<UserInfo?> GetByGoogleSubjectAsync(string googleSubject, CancellationToken ct)
+    {
+        return _dbContext.UserInfos.FirstOrDefaultAsync(x => x.GoogleSubject == googleSubject, ct);
     }
 }

@@ -2,8 +2,6 @@ namespace FinTrackCore.Application.Common.Configuration;
 
 public class MessageSettings
 {
-    public const string SectionName = "Messages";
-
     public string ValidationFailed { get; set; } = "One or more validation errors occurred.";
     public string NotFound { get; set; } = "The requested resource was not found.";
     public string Unauthorized { get; set; } = "You are not authorized to perform this action.";
@@ -21,4 +19,10 @@ public class MessageSettings
     public string LogoutSuccess { get; set; } = "Logged out successfully.";
     public string TokenRefreshed { get; set; } = "Token refreshed successfully.";
     public string InvalidRefreshToken { get; set; } = "Invalid or expired refresh token.";
+    public string GoogleAuthSuccess { get; set; } = "Signed in with Google successfully.";
+    public string GoogleAuthFailed { get; set; } = "Google authentication failed.";
+
+    public string SystemAccountDeleteForbidden { get; set; } = "System default accounts cannot be deleted.";
+    public string InvalidAccountType { get; set; } = "Invalid account type.";
+    public string InvalidParentAccount { get; set; } = "Parent account is invalid for this user.";
 }

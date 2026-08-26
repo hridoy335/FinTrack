@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using FinTrackCore.Application.Common.Configuration;
+using FinTrackCore.Application.Constants;
 using FinTrackCore.Application.Interfaces;
 using FinTrackCore.Domain.Entities;
 using Microsoft.Extensions.Options;
@@ -10,15 +11,22 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FinTrackCore.Infrastructure.Services;
 
-public class JwtTokenService(IOptions<JwtSettings> jwtOptions) : IJwtTokenService
+public class JwtTokenService : IJwtTokenService
 {
-    private readonly JwtSettings _jwtSettings = jwtOptions.Value;
+    private readonly JwtSettings _jwtSettings;
+
+    public JwtTokenService(IOptions<JwtSettings> jwtOptions)
+    {
+        _jwtSettings = jwtOptions.Value;
+    }
 
     public string CreateAccessToken(UserInfo user)
     {
-        if (string.IsNullOrWhiteSpace(_jwtSettings.Key) || _jwtSettings.Key.Length < 32)
+        if (string.IsNullOrWhiteSpace(_jwtSettings.Key)
+            || _jwtSettings.Key.Length < AuthConstants.JwtMinKeyLength)
         {
-            throw new InvalidOperationException("Jwt:Key must be configured and at least 32 characters.");
+            throw new InvalidOperationException(
+                $"Jwt:Key must be configured and at least {AuthConstants.JwtMinKeyLength} characters.");
         }
 
         var claims = new List<Claim>
@@ -47,7 +55,8 @@ public class JwtTokenService(IOptions<JwtSettings> jwtOptions) : IJwtTokenServic
 
     public (string PlainToken, string TokenHash, DateTime ExpiresAt) CreateRefreshToken()
     {
-        var plainToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+        var plainToken = Convert.ToBase64String(
+            RandomNumberGenerator.GetBytes(AuthConstants.RefreshTokenByteLength));
         var tokenHash = HashRefreshToken(plainToken);
         var expiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenDays);
         return (plainToken, tokenHash, expiresAt);

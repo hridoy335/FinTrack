@@ -1,3 +1,4 @@
+using FinTrackCore.Application.Constants;
 using FinTrackCore.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -14,28 +15,30 @@ public class UserInfoConfiguration : IEntityTypeConfiguration<UserInfo>
         builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
         builder.Property(x => x.UserName)
-            .HasMaxLength(100)
+            .HasMaxLength(LengthConstants.UserName)
             .IsRequired();
 
         builder.Property(x => x.Email)
-            .HasMaxLength(320)
+            .HasMaxLength(LengthConstants.Email)
             .IsRequired();
 
         builder.Property(x => x.PasswordHash)
-            .HasMaxLength(500)
-            .IsRequired();
+            .HasMaxLength(LengthConstants.PasswordHash);
+
+        builder.Property(x => x.GoogleSubject)
+            .HasMaxLength(LengthConstants.GoogleSubject);
 
         builder.Property(x => x.FirstName)
-            .HasMaxLength(100)
+            .HasMaxLength(LengthConstants.PersonName)
             .IsRequired();
 
         builder.Property(x => x.LastName)
-            .HasMaxLength(100);
+            .HasMaxLength(LengthConstants.PersonName);
 
         builder.Property(x => x.CurrencyCode)
-            .HasMaxLength(10)
+            .HasMaxLength(LengthConstants.CurrencyCode)
             .IsRequired()
-            .HasDefaultValue("BDT");
+            .HasDefaultValue(CurrencyConstants.DefaultCurrencyCode);
 
         builder.Property(x => x.IsActive)
             .IsRequired()
@@ -48,5 +51,8 @@ public class UserInfoConfiguration : IEntityTypeConfiguration<UserInfo>
 
         builder.HasIndex(x => x.UserName).IsUnique();
         builder.HasIndex(x => x.Email).IsUnique();
+        builder.HasIndex(x => x.GoogleSubject)
+            .IsUnique()
+            .HasFilter("\"GoogleSubject\" IS NOT NULL");
     }
 }

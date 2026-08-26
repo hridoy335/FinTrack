@@ -22,6 +22,128 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("FinTrackCore.Domain.Entities.AccountType", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("NormalBalance")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("AccountType", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Code = "ASSET",
+                            Name = "Asset",
+                            NormalBalance = "DEBIT"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Code = "LIABILITY",
+                            Name = "Liability",
+                            NormalBalance = "CREDIT"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            Code = "EQUITY",
+                            Name = "Equity",
+                            NormalBalance = "CREDIT"
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            Code = "INCOME",
+                            Name = "Income",
+                            NormalBalance = "CREDIT"
+                        },
+                        new
+                        {
+                            Id = 5L,
+                            Code = "EXPENSE",
+                            Name = "Expense",
+                            NormalBalance = "DEBIT"
+                        });
+                });
+
+            modelBuilder.Entity("FinTrackCore.Domain.Entities.Coa", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("AccountCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("AccountName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<long>("AccountTypeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsSystemDefault")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<long?>("ParentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("UserInfoId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountTypeId");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("UserInfoId");
+
+                    b.HasIndex("UserInfoId", "AccountCode")
+                        .IsUnique();
+
+                    b.ToTable("Coa", (string)null);
+                });
+
             modelBuilder.Entity("FinTrackCore.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<long>("Id")
@@ -39,6 +161,11 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("ReplacedByTokenHash")
                         .HasMaxLength(500)
@@ -93,6 +220,10 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("GoogleSubject")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
@@ -103,7 +234,6 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
@@ -120,10 +250,40 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
+                    b.HasIndex("GoogleSubject")
+                        .IsUnique()
+                        .HasFilter("\"GoogleSubject\" IS NOT NULL");
+
                     b.HasIndex("UserName")
                         .IsUnique();
 
                     b.ToTable("UserInfo", (string)null);
+                });
+
+            modelBuilder.Entity("FinTrackCore.Domain.Entities.Coa", b =>
+                {
+                    b.HasOne("FinTrackCore.Domain.Entities.AccountType", "AccountType")
+                        .WithMany()
+                        .HasForeignKey("AccountTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FinTrackCore.Domain.Entities.Coa", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("FinTrackCore.Domain.Entities.UserInfo", "UserInfo")
+                        .WithMany()
+                        .HasForeignKey("UserInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AccountType");
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("UserInfo");
                 });
 
             modelBuilder.Entity("FinTrackCore.Domain.Entities.RefreshToken", b =>
@@ -135,6 +295,11 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("UserInfo");
+                });
+
+            modelBuilder.Entity("FinTrackCore.Domain.Entities.Coa", b =>
+                {
+                    b.Navigation("Children");
                 });
 #pragma warning restore 612, 618
         }

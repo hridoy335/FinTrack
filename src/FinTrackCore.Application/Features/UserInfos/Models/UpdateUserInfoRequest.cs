@@ -1,4 +1,6 @@
-namespace FinTrackCore.Application.Features.Users.Models;
+using FinTrackCore.Application.Constants;
+
+namespace FinTrackCore.Application.Features.UserInfos.Models;
 
 public sealed class UpdateUserInfoRequest
 {
@@ -7,6 +9,6 @@ public sealed class UpdateUserInfoRequest
     public string? Password { get; set; }
     public required string FirstName { get; set; }
     public string? LastName { get; set; }
-    public string CurrencyCode { get; set; } = "BDT";
+    public string CurrencyCode { get; set; } = CurrencyConstants.DefaultCurrencyCode;
     public bool IsActive { get; set; } = true;
 }

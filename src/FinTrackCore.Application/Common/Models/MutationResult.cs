@@ -2,6 +2,6 @@ namespace FinTrackCore.Application.Common.Models;
 
 public sealed class MutationResult
 {
-    public long Id { get; init; }
-    public string Message { get; init; } = string.Empty;
+    public required long Id { get; init; }
+    public required string Message { get; init; }
 }

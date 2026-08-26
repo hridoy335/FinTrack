@@ -1,18 +1,34 @@
-using FinTrackCore.Application.Features.Users;
-using FinTrackCore.Application.Features.Users.Models;
+using FinTrackCore.Application.Common.Configuration;
+using FinTrackCore.Application.Features.UserInfos;
+using FinTrackCore.Application.Features.UserInfos.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace FinTrackCore.Api.Controllers;
 
+[Authorize]
 [Route("api/[controller]s")]
-public class UserInfoController(IUserInfoService userInfoService) : JsonApiControllerBase
+public class UserInfoController : JsonApiControllerBase
 {
+    private readonly IUserInfoService _userInfoService;
+    private readonly MessageSettings _messages;
+
+    public UserInfoController(
+        IUserInfoService userInfoService,
+        IOptions<MessageSettings> messageOptions)
+    {
+        _userInfoService = userInfoService;
+        _messages = messageOptions.Value;
+    }
+
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Create(
         [FromBody] CreateUserInfoRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
-        var result = await userInfoService.CreateAsync(request, cancellationToken);
+        var result = await _userInfoService.CreateAsync(request, ct);
 
         if (result.TryPickBadOutcome(out var error))
         {
@@ -26,13 +42,24 @@ public class UserInfoController(IUserInfoService userInfoService) : JsonApiContr
             new { id = data.Id });
     }
 
-    [HttpPut("{id:long}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> Update(
         long id,
         [FromBody] UpdateUserInfoRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
-        var result = await userInfoService.UpdateAsync(id, request, cancellationToken);
+        var currentUserId = GetCurrentLoggedInUserId();
+        if (currentUserId is null)
+        {
+            return SendResponse(StatusCodes.Status401Unauthorized, _messages.Unauthorized);
+        }
+
+        if (currentUserId.Value != id)
+        {
+            return SendResponse(StatusCodes.Status403Forbidden, _messages.Forbidden);
+        }
+
+        var result = await _userInfoService.UpdateAsync(id, request, ct);
 
         if (result.TryPickBadOutcome(out var error))
         {
@@ -46,12 +73,23 @@ public class UserInfoController(IUserInfoService userInfoService) : JsonApiContr
             new { id = data.Id });
     }
 
-    [HttpGet("{id:long}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetById(
         long id,
-        CancellationToken cancellationToken)
+        CancellationToken ct)
     {
-        var result = await userInfoService.GetByIdAsync(id, cancellationToken);
+        var currentUserId = GetCurrentLoggedInUserId();
+        if (currentUserId is null)
+        {
+            return SendResponse(StatusCodes.Status401Unauthorized, _messages.Unauthorized);
+        }
+
+        if (currentUserId.Value != id)
+        {
+            return SendResponse(StatusCodes.Status403Forbidden, _messages.Forbidden);
+        }
+
+        var result = await _userInfoService.GetByIdAsync(id, ct);
 
         if (result.TryPickBadOutcome(out var error))
         {

@@ -5,10 +5,10 @@ namespace FinTrackCore.Infrastructure.Persistence;
 
 public sealed class UnitOfWork(AppDbContext dbContext) : IUnitOfWork
 {
-    public async Task AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default)
+    public async Task AddAsync<TEntity>(TEntity entity, CancellationToken ct)
         where TEntity : class
     {
-        await dbContext.Set<TEntity>().AddAsync(entity, cancellationToken);
+        await dbContext.Set<TEntity>().AddAsync(entity, ct);
     }
 
     public void Update<TEntity>(TEntity entity)
@@ -17,8 +17,14 @@ public sealed class UnitOfWork(AppDbContext dbContext) : IUnitOfWork
         dbContext.Set<TEntity>().Update(entity);
     }
 
-    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public void Remove<TEntity>(TEntity entity)
+        where TEntity : class
     {
-        return dbContext.SaveChangesAsync(cancellationToken);
+        dbContext.Set<TEntity>().Remove(entity);
+    }
+
+    public Task<int> SaveChangesAsync(CancellationToken ct)
+    {
+        return dbContext.SaveChangesAsync(ct);
     }
 }

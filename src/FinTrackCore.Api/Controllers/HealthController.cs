@@ -1,16 +1,25 @@
 using FinTrackCore.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinTrackCore.Api.Controllers;
 
+[AllowAnonymous]
 [Route("api/[controller]s")]
-public class HealthController(AppDbContext dbContext) : JsonApiControllerBase
+public class HealthController : JsonApiControllerBase
 {
-    [HttpGet]
-    public async Task<IActionResult> Get(CancellationToken cancellationToken)
+    private readonly AppDbContext _dbContext;
+
+    public HealthController(AppDbContext dbContext)
     {
-        var canConnect = await dbContext.Database.CanConnectAsync(cancellationToken);
+        _dbContext = dbContext;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Get(CancellationToken ct)
+    {
+        var canConnect = await _dbContext.Database.CanConnectAsync(ct);
 
         return SendResponse(
             StatusCodes.Status200OK,

@@ -2,11 +2,14 @@ namespace FinTrackCore.Domain.Repositories;
 
 public interface IUnitOfWork
 {
-    Task AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default)
+    Task AddAsync<TEntity>(TEntity entity, CancellationToken ct)
         where TEntity : class;
 
     void Update<TEntity>(TEntity entity)
         where TEntity : class;
 
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    void Remove<TEntity>(TEntity entity)
+        where TEntity : class;
+
+    Task<int> SaveChangesAsync(CancellationToken ct);
 }

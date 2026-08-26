@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using FinTrackCore.Api.Extensions;
 using FinTrackCore.Application.Common.Models;
+using FinTrackCore.Application.Constants;
 using Microsoft.AspNetCore.Mvc;
 using SharpOutcome.Helpers.Contracts;
 using SharpOutcome.Helpers.Enums;
@@ -31,7 +32,7 @@ public abstract class JsonApiControllerBase : ControllerBase
     {
         if (pageSize <= 0)
         {
-            pageSize = 1;
+            pageSize = PaginationConstants.MinPageSize;
         }
 
         var totalPage = (long)Math.Ceiling(totalData / (decimal)pageSize);
@@ -81,8 +82,17 @@ public abstract class JsonApiControllerBase : ControllerBase
 
     protected long? GetCurrentLoggedInUserId(string? locator = null)
     {
-        var key = locator ?? ClaimTypes.NameIdentifier;
-        var id = User.FindFirst(x => x.Type == key)?.Value;
+        string? id = null;
+
+        if (!string.IsNullOrWhiteSpace(locator))
+        {
+            id = User.FindFirst(x => x.Type == locator)?.Value;
+        }
+        else
+        {
+            id = User.FindFirst(x => x.Type == ClaimTypes.NameIdentifier)?.Value
+                 ?? User.FindFirst(x => x.Type == "uid")?.Value;
+        }
 
         if (string.IsNullOrEmpty(id))
         {

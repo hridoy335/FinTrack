@@ -1,3 +1,4 @@
+using FinTrackCore.Application.Constants;
 using FinTrackCore.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -16,15 +17,19 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
         builder.Property(x => x.UserInfoId).IsRequired();
 
         builder.Property(x => x.TokenHash)
-            .HasMaxLength(500)
+            .HasMaxLength(LengthConstants.TokenHash)
             .IsRequired();
 
         builder.Property(x => x.ExpiresAt).IsRequired();
         builder.Property(x => x.CreatedAt).IsRequired();
         builder.Property(x => x.RevokedAt);
 
-        builder.Property(x => x.ReplacedByTokenHash).HasMaxLength(500);
-        builder.Property(x => x.CreatedByIp).HasMaxLength(100);
+        builder.Property(x => x.ReplacedByTokenHash).HasMaxLength(LengthConstants.TokenHash);
+        builder.Property(x => x.CreatedByIp).HasMaxLength(LengthConstants.IpAddress);
+
+        builder.Property(x => x.IsActive)
+            .IsRequired()
+            .HasDefaultValue(true);
 
         builder.HasIndex(x => x.TokenHash).IsUnique();
         builder.HasIndex(x => x.UserInfoId);
@@ -33,7 +38,5 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
             .WithMany()
             .HasForeignKey(x => x.UserInfoId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.Ignore(x => x.IsActive);
     }
 }

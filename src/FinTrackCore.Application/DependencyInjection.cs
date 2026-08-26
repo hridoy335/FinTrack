@@ -1,8 +1,11 @@
 using FinTrackCore.Application.Common.Configuration;
+using FinTrackCore.Application.Features.AccountTypes;
 using FinTrackCore.Application.Features.Auth;
-using FinTrackCore.Application.Features.Users;
+using FinTrackCore.Application.Features.Coas;
+using FinTrackCore.Application.Features.UserInfos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace FinTrackCore.Application;
 
@@ -12,10 +15,16 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<MessageSettings>(configuration.GetSection(MessageSettings.SectionName));
+        services.AddSingleton(Options.Create(new MessageSettings()));
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
+        services.Configure<GoogleAuthSettings>(configuration.GetSection(GoogleAuthSettings.SectionName));
+
         services.AddScoped<IUserInfoService, UserInfoService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IAccountTypeService, AccountTypeService>();
+        services.AddScoped<ICoaService, CoaService>();
+        services.AddScoped<IDefaultCoaSeedService, DefaultCoaSeedService>();
+
         return services;
     }
 }
