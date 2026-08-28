@@ -10,11 +10,11 @@ public class RefreshToken
     public required string TokenHash { get; set; }
 
     public required DateTime ExpiresAt { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public required DateTime CreatedAt { get; set; }
     public DateTime? RevokedAt { get; set; }
 
     public string? ReplacedByTokenHash { get; set; }
     public string? CreatedByIp { get; set; }
 
-    public bool IsActive { get; set; }
+    public required bool IsActive { get; set; }
 }

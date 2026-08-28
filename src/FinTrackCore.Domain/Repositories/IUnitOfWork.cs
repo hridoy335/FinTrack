@@ -12,4 +12,6 @@ public interface IUnitOfWork
         where TEntity : class;
 
     Task<int> SaveChangesAsync(CancellationToken ct);
+
+    Task ExecuteInTransactionAsync(Func<CancellationToken, Task> action, CancellationToken ct);
 }

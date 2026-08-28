@@ -113,6 +113,10 @@ public static class DependencyInjection
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IAccountTypeRepository, AccountTypeRepository>();
         services.AddScoped<ICoaRepository, CoaRepository>();
+        services.AddScoped<IFinancialYearRepository, FinancialYearRepository>();
+        services.AddScoped<ITransactionTypeRepository, TransactionTypeRepository>();
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
+        services.AddScoped<IReportRepository, ReportRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IPasswordService, PasswordService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();

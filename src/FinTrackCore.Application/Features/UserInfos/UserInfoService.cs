@@ -2,6 +2,7 @@ using FinTrackCore.Application.Common.Configuration;
 using FinTrackCore.Application.Common.Models;
 using FinTrackCore.Application.Constants;
 using FinTrackCore.Application.Features.Coas;
+using FinTrackCore.Application.Features.FinancialYears;
 using FinTrackCore.Application.Features.UserInfos.Models;
 using FinTrackCore.Application.Interfaces;
 using FinTrackCore.Domain.Entities;
@@ -19,6 +20,7 @@ public class UserInfoService : IUserInfoService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordService _passwordService;
     private readonly IDefaultCoaSeedService _defaultCoaSeedService;
+    private readonly IDefaultFinancialYearSeedService _defaultFinancialYearSeedService;
     private readonly MessageSettings _messages;
 
     public UserInfoService(
@@ -26,12 +28,14 @@ public class UserInfoService : IUserInfoService
         IUnitOfWork unitOfWork,
         IPasswordService passwordService,
         IDefaultCoaSeedService defaultCoaSeedService,
+        IDefaultFinancialYearSeedService defaultFinancialYearSeedService,
         IOptions<MessageSettings> messageOptions)
     {
         _userInfoRepository = userInfoRepository;
         _unitOfWork = unitOfWork;
         _passwordService = passwordService;
         _defaultCoaSeedService = defaultCoaSeedService;
+        _defaultFinancialYearSeedService = defaultFinancialYearSeedService;
         _messages = messageOptions.Value;
     }
 
@@ -66,10 +70,13 @@ public class UserInfoService : IUserInfoService
             CreatedDate = DateTime.UtcNow
         };
 
-        await _unitOfWork.AddAsync(userInfo, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
-
-        await _defaultCoaSeedService.SeedForUserAsync(userInfo.Id, ct);
+        await _unitOfWork.ExecuteInTransactionAsync(async innerCt =>
+        {
+            await _unitOfWork.AddAsync(userInfo, innerCt);
+            await _unitOfWork.SaveChangesAsync(innerCt);
+            await _defaultCoaSeedService.SeedForUserAsync(userInfo.Id, innerCt);
+            await _defaultFinancialYearSeedService.SeedForUserAsync(userInfo.Id, innerCt);
+        }, ct);
 
         return new MutationResult
         {

@@ -144,6 +144,57 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                     b.ToTable("Coa", (string)null);
                 });
 
+            modelBuilder.Entity("FinTrackCore.Domain.Entities.FinancialYear", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsClosed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("UserInfoId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserInfoId");
+
+                    b.HasIndex("UserInfoId", "Year")
+                        .IsUnique();
+
+                    b.ToTable("FinancialYear", (string)null);
+                });
+
             modelBuilder.Entity("FinTrackCore.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<long>("Id")
@@ -190,6 +241,102 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserInfoId");
 
                     b.ToTable("RefreshToken", (string)null);
+                });
+
+            modelBuilder.Entity("FinTrackCore.Domain.Entities.Transaction", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<long>("FinancialYearId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("TransactionTypeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("UserInfoId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FinancialYearId");
+
+                    b.HasIndex("TransactionTypeId");
+
+                    b.HasIndex("UserInfoId");
+
+                    b.HasIndex("UserInfoId", "TransactionDate");
+
+                    b.ToTable("Transaction", (string)null);
+                });
+
+            modelBuilder.Entity("FinTrackCore.Domain.Entities.TransactionType", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("TransactionType", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Code = "INCOME",
+                            Name = "Income"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Code = "EXPENSE",
+                            Name = "Expense"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            Code = "TRANSFER",
+                            Name = "Transfer"
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            Code = "OPENING_BALANCE",
+                            Name = "Opening Balance"
+                        });
                 });
 
             modelBuilder.Entity("FinTrackCore.Domain.Entities.UserInfo", b =>
@@ -260,6 +407,46 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                     b.ToTable("UserInfo", (string)null);
                 });
 
+            modelBuilder.Entity("FinTrackCore.Domain.Entities.VoucherLine", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CoaId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("CreditAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal>("DebitAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<int>("LineNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("TransactionId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CoaId");
+
+                    b.HasIndex("TransactionId");
+
+                    b.HasIndex("TransactionId", "LineNumber")
+                        .IsUnique();
+
+                    b.ToTable("VoucherLine", (string)null);
+                });
+
             modelBuilder.Entity("FinTrackCore.Domain.Entities.Coa", b =>
                 {
                     b.HasOne("FinTrackCore.Domain.Entities.AccountType", "AccountType")
@@ -286,6 +473,17 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                     b.Navigation("UserInfo");
                 });
 
+            modelBuilder.Entity("FinTrackCore.Domain.Entities.FinancialYear", b =>
+                {
+                    b.HasOne("FinTrackCore.Domain.Entities.UserInfo", "UserInfo")
+                        .WithMany()
+                        .HasForeignKey("UserInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserInfo");
+                });
+
             modelBuilder.Entity("FinTrackCore.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("FinTrackCore.Domain.Entities.UserInfo", "UserInfo")
@@ -297,9 +495,60 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                     b.Navigation("UserInfo");
                 });
 
+            modelBuilder.Entity("FinTrackCore.Domain.Entities.Transaction", b =>
+                {
+                    b.HasOne("FinTrackCore.Domain.Entities.FinancialYear", "FinancialYear")
+                        .WithMany()
+                        .HasForeignKey("FinancialYearId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FinTrackCore.Domain.Entities.TransactionType", "TransactionType")
+                        .WithMany()
+                        .HasForeignKey("TransactionTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FinTrackCore.Domain.Entities.UserInfo", "UserInfo")
+                        .WithMany()
+                        .HasForeignKey("UserInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FinancialYear");
+
+                    b.Navigation("TransactionType");
+
+                    b.Navigation("UserInfo");
+                });
+
+            modelBuilder.Entity("FinTrackCore.Domain.Entities.VoucherLine", b =>
+                {
+                    b.HasOne("FinTrackCore.Domain.Entities.Coa", "Coa")
+                        .WithMany()
+                        .HasForeignKey("CoaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FinTrackCore.Domain.Entities.Transaction", "Transaction")
+                        .WithMany("VoucherLines")
+                        .HasForeignKey("TransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Coa");
+
+                    b.Navigation("Transaction");
+                });
+
             modelBuilder.Entity("FinTrackCore.Domain.Entities.Coa", b =>
                 {
                     b.Navigation("Children");
+                });
+
+            modelBuilder.Entity("FinTrackCore.Domain.Entities.Transaction", b =>
+                {
+                    b.Navigation("VoucherLines");
                 });
 #pragma warning restore 612, 618
         }

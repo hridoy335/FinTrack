@@ -3,6 +3,7 @@ using FinTrackCore.Application.Common.Configuration;
 using FinTrackCore.Application.Constants;
 using FinTrackCore.Application.Features.Auth.Models;
 using FinTrackCore.Application.Features.Coas;
+using FinTrackCore.Application.Features.FinancialYears;
 using FinTrackCore.Application.Interfaces;
 using FinTrackCore.Domain.Entities;
 using FinTrackCore.Domain.Repositories;
@@ -22,6 +23,7 @@ public class AuthService : IAuthService
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IGoogleAuthService _googleAuthService;
     private readonly IDefaultCoaSeedService _defaultCoaSeedService;
+    private readonly IDefaultFinancialYearSeedService _defaultFinancialYearSeedService;
     private readonly MessageSettings _messages;
     private readonly JwtSettings _jwtSettings;
 
@@ -33,6 +35,7 @@ public class AuthService : IAuthService
         IJwtTokenService jwtTokenService,
         IGoogleAuthService googleAuthService,
         IDefaultCoaSeedService defaultCoaSeedService,
+        IDefaultFinancialYearSeedService defaultFinancialYearSeedService,
         IOptions<MessageSettings> messageOptions,
         IOptions<JwtSettings> jwtOptions)
     {
@@ -43,6 +46,7 @@ public class AuthService : IAuthService
         _jwtTokenService = jwtTokenService;
         _googleAuthService = googleAuthService;
         _defaultCoaSeedService = defaultCoaSeedService;
+        _defaultFinancialYearSeedService = defaultFinancialYearSeedService;
         _messages = messageOptions.Value;
         _jwtSettings = jwtOptions.Value;
     }
@@ -129,9 +133,13 @@ public class AuthService : IAuthService
                     CreatedDate = DateTime.UtcNow
                 };
 
-                await _unitOfWork.AddAsync(user, ct);
-                await _unitOfWork.SaveChangesAsync(ct);
-                await _defaultCoaSeedService.SeedForUserAsync(user.Id, ct);
+                await _unitOfWork.ExecuteInTransactionAsync(async innerCt =>
+                {
+                    await _unitOfWork.AddAsync(user, innerCt);
+                    await _unitOfWork.SaveChangesAsync(innerCt);
+                    await _defaultCoaSeedService.SeedForUserAsync(user.Id, innerCt);
+                    await _defaultFinancialYearSeedService.SeedForUserAsync(user.Id, innerCt);
+                }, ct);
             }
         }
 
@@ -164,23 +172,26 @@ public class AuthService : IAuthService
         var user = existing.UserInfo;
         var (plainRefreshToken, refreshTokenHash, refreshExpiresAt) = _jwtTokenService.CreateRefreshToken();
 
-        existing.RevokedAt = DateTime.UtcNow;
-        existing.IsActive = false;
-        existing.ReplacedByTokenHash = refreshTokenHash;
-        _unitOfWork.Update(existing);
-
-        var replacement = new RefreshToken
+        await _unitOfWork.ExecuteInTransactionAsync(async innerCt =>
         {
-            UserInfoId = user.Id,
-            TokenHash = refreshTokenHash,
-            ExpiresAt = refreshExpiresAt,
-            CreatedAt = DateTime.UtcNow,
-            CreatedByIp = ipAddress,
-            IsActive = true
-        };
+            existing.RevokedAt = DateTime.UtcNow;
+            existing.IsActive = false;
+            existing.ReplacedByTokenHash = refreshTokenHash;
+            _unitOfWork.Update(existing);
 
-        await _unitOfWork.AddAsync(replacement, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+            var replacement = new RefreshToken
+            {
+                UserInfoId = user.Id,
+                TokenHash = refreshTokenHash,
+                ExpiresAt = refreshExpiresAt,
+                CreatedAt = DateTime.UtcNow,
+                CreatedByIp = ipAddress,
+                IsActive = true
+            };
+
+            await _unitOfWork.AddAsync(replacement, innerCt);
+            await _unitOfWork.SaveChangesAsync(innerCt);
+        }, ct);
 
         return new LoginResponse
         {

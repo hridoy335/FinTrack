@@ -54,14 +54,7 @@ public sealed class CoaService : ICoaService
             return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.ValidationFailed);
         }
 
-        try
-        {
-            _ = await _accountTypeRepository.GetByIdAsync(request.AccountTypeId, ct);
-        }
-        catch (KeyNotFoundException)
-        {
-            return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.InvalidAccountType);
-        }
+        _ = await _accountTypeRepository.GetByIdAsync(request.AccountTypeId, ct);
 
         var code = request.AccountCode.Trim();
         if (await _coaRepository.ExistsByCodeForUserAsync(code, userInfoId, ct))
@@ -71,15 +64,8 @@ public sealed class CoaService : ICoaService
 
         if (request.ParentId is not null)
         {
-            try
-            {
-                var parent = await _coaRepository.GetByIdForUserAsync(request.ParentId.Value, userInfoId, ct);
-                if (parent.AccountTypeId != request.AccountTypeId)
-                {
-                    return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.InvalidParentAccount);
-                }
-            }
-            catch (KeyNotFoundException)
+            var parent = await _coaRepository.GetByIdForUserAsync(request.ParentId.Value, userInfoId, ct);
+            if (parent.AccountTypeId != request.AccountTypeId)
             {
                 return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.InvalidParentAccount);
             }
@@ -127,15 +113,8 @@ public sealed class CoaService : ICoaService
 
         if (request.ParentId is not null)
         {
-            try
-            {
-                var parent = await _coaRepository.GetByIdForUserAsync(request.ParentId.Value, userInfoId, ct);
-                if (parent.AccountTypeId != coa.AccountTypeId)
-                {
-                    return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.InvalidParentAccount);
-                }
-            }
-            catch (KeyNotFoundException)
+            var parent = await _coaRepository.GetByIdForUserAsync(request.ParentId.Value, userInfoId, ct);
+            if (parent.AccountTypeId != coa.AccountTypeId)
             {
                 return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.InvalidParentAccount);
             }

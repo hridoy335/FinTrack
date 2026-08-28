@@ -15,4 +15,8 @@ public static class LengthConstants
     public const int NormalBalance = 20;
     public const int AccountCode = 50;
     public const int AccountName = 200;
+    public const int FinancialYearName = 50;
+    public const int TransactionTypeCode = 50;
+    public const int TransactionTypeName = 100;
+    public const int TransactionDescription = 500;
 }

@@ -9,4 +9,5 @@ public static class ErrorCodes
     public const string Conflict = "CON_001";
     public const string DomainError = "DOM_001";
     public const string InternalError = "SYS_001";
+    public const string RequestCanceled = "REQ_001";
 }

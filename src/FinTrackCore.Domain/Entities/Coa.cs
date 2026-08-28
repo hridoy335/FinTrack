@@ -17,9 +17,9 @@ public class Coa
     public required string AccountCode { get; set; }
     public required string AccountName { get; set; }
 
-    public bool IsSystemDefault { get; set; }
-    public bool IsActive { get; set; }
+    public required bool IsSystemDefault { get; set; }
+    public required bool IsActive { get; set; }
 
-    public DateTime CreatedDate { get; set; }
+    public required DateTime CreatedDate { get; set; }
     public DateTime? UpdatedDate { get; set; }
 }

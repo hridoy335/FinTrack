@@ -9,6 +9,7 @@ public class MessageSettings
     public string Conflict { get; set; } = "The request conflicts with the current state.";
     public string DomainError { get; set; } = "A business rule was violated.";
     public string InternalError { get; set; } = "An unexpected error occurred. Please try again later.";
+    public string RequestCanceled { get; set; } = "The request was canceled.";
 
     public string InsertSuccess { get; set; } = "Data saved successfully.";
     public string UpdateSuccess { get; set; } = "Data updated successfully.";
@@ -25,4 +26,13 @@ public class MessageSettings
     public string SystemAccountDeleteForbidden { get; set; } = "System default accounts cannot be deleted.";
     public string InvalidAccountType { get; set; } = "Invalid account type.";
     public string InvalidParentAccount { get; set; } = "Parent account is invalid for this user.";
+
+    public string InvalidFinancialYear { get; set; } = "Financial year is invalid for this user.";
+    public string FinancialYearClosed { get; set; } = "Cannot post to a closed financial year.";
+    public string InvalidTransactionType { get; set; } = "Invalid transaction type.";
+    public string InvalidCoa { get; set; } = "One or more accounts are invalid for this user.";
+    public string InvalidCoaForTransactionType { get; set; } = "Accounts do not match the transaction type.";
+    public string InvalidAmount { get; set; } = "Amount must be greater than zero.";
+    public string TransactionDateOutOfRange { get; set; } = "Transaction date is outside the financial year.";
+    public string SameDebitCreditCoa { get; set; } = "Debit and credit accounts must be different.";
 }

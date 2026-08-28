@@ -100,6 +100,12 @@ public sealed class ExceptionHandlingMiddleware(
                     : keyNotFoundException.Message,
                 null),
 
+            OperationCanceledException => (
+                StatusCodes.Status499ClientClosedRequest,
+                ErrorCodes.RequestCanceled,
+                _messages.RequestCanceled,
+                null),
+
             _ => (
                 AppException.StatusCodes.InternalServerError,
                 ErrorCodes.InternalError,
