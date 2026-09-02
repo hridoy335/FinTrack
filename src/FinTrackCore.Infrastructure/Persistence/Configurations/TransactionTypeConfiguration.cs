@@ -49,6 +49,18 @@ public class TransactionTypeConfiguration : IEntityTypeConfiguration<Transaction
                 Id = TransactionTypeIds.OpeningBalance,
                 Code = TransactionTypeConstants.Codes.OpeningBalance,
                 Name = TransactionTypeConstants.Names.OpeningBalance
+            },
+            new TransactionType
+            {
+                Id = TransactionTypeIds.LoanBorrow,
+                Code = TransactionTypeConstants.Codes.LoanBorrow,
+                Name = TransactionTypeConstants.Names.LoanBorrow
+            },
+            new TransactionType
+            {
+                Id = TransactionTypeIds.LoanRepay,
+                Code = TransactionTypeConstants.Codes.LoanRepay,
+                Name = TransactionTypeConstants.Names.LoanRepay
             });
     }
 }

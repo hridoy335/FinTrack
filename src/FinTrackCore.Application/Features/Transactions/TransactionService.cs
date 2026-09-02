@@ -50,12 +50,15 @@ public sealed class TransactionService : ITransactionService
             ? PaginationConstants.DefaultPageSize
             : Math.Min(query.PageSize, PaginationConstants.MaxPageSize);
 
+        DateTime? fromDate = query.FromDate.HasValue ? ToUtcDate(query.FromDate.Value) : null;
+        DateTime? toDate = query.ToDate.HasValue ? ToUtcDate(query.ToDate.Value) : null;
+
         var result = await _transactionRepository.GetPagedForUserAsync(
             userInfoId,
             query.FinancialYearId,
             query.TransactionTypeId,
-            query.FromDate,
-            query.ToDate,
+            fromDate,
+            toDate,
             page,
             pageSize,
             ct);
@@ -86,7 +89,10 @@ public sealed class TransactionService : ITransactionService
             return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.SameDebitCreditCoa);
         }
 
-        _ = await _transactionTypeRepository.GetByIdAsync(request.TransactionTypeId, ct);
+        if (!await _transactionTypeRepository.ExistsAsync(request.TransactionTypeId, ct))
+        {
+            return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.InvalidTransactionType);
+        }
 
         var financialYear = await _financialYearRepository.GetByIdForUserAsync(
             request.FinancialYearId,
@@ -98,8 +104,10 @@ public sealed class TransactionService : ITransactionService
             return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.FinancialYearClosed);
         }
 
-        var transactionDate = request.TransactionDate.Date;
-        if (transactionDate < financialYear.StartDate.Date || transactionDate > financialYear.EndDate.Date)
+        var calendarDate = request.TransactionDate.Date;
+        var transactionDate = ToUtcDate(calendarDate);
+
+        if (transactionDate < financialYear.StartDate || transactionDate > financialYear.EndDate)
         {
             return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.TransactionDateOutOfRange);
         }
@@ -168,6 +176,9 @@ public sealed class TransactionService : ITransactionService
         };
     }
 
+    private static DateTime ToUtcDate(DateTime value) =>
+        new(value.Year, value.Month, value.Day, 0, 0, 0, DateTimeKind.Utc);
+
     private static bool IsValidCoaPairForTransactionType(
         long transactionTypeId,
         long debitAccountTypeId,
@@ -183,6 +194,10 @@ public sealed class TransactionService : ITransactionService
                 && creditAccountTypeId == AccountTypeIds.Asset,
             TransactionTypeIds.OpeningBalance => debitAccountTypeId == AccountTypeIds.Asset
                 && creditAccountTypeId == AccountTypeIds.Equity,
+            TransactionTypeIds.LoanBorrow => debitAccountTypeId == AccountTypeIds.Asset
+                && creditAccountTypeId == AccountTypeIds.Liability,
+            TransactionTypeIds.LoanRepay => debitAccountTypeId == AccountTypeIds.Liability
+                && creditAccountTypeId == AccountTypeIds.Asset,
             _ => false
         };
     }

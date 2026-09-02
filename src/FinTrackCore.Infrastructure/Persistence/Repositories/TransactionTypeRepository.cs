@@ -22,6 +22,11 @@ public sealed class TransactionTypeRepository : ITransactionTypeRepository
         return transactionType ?? throw new KeyNotFoundException();
     }
 
+    public Task<bool> ExistsAsync(long id, CancellationToken ct)
+    {
+        return _dbContext.TransactionTypes.AnyAsync(x => x.Id == id, ct);
+    }
+
     public async Task<TransactionType> GetByCodeAsync(string code, CancellationToken ct)
     {
         var transactionType = await _dbContext.TransactionTypes

@@ -5,6 +5,7 @@ using FinTrackCore.Application.Common.Models;
 using FinTrackCore.Infrastructure;
 using FinTrackCore.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -86,6 +87,11 @@ using (var scope = app.Services.CreateScope())
     if (!await db.Database.CanConnectAsync())
     {
         throw new InvalidOperationException("Cannot connect to PostgreSQL. Check ConnectionStrings:DefaultConnection.");
+    }
+
+    if (app.Environment.IsDevelopment())
+    {
+        await db.Database.MigrateAsync();
     }
 }
 
