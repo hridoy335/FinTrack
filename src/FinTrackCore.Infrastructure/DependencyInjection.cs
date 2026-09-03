@@ -121,6 +121,7 @@ public static class DependencyInjection
         services.AddScoped<IPasswordService, PasswordService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+        services.AddScoped<ICoaListPdfExporter, CoaListPdfExporter>();
 
         return services;
     }

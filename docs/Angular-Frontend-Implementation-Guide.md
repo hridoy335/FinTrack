@@ -244,13 +244,12 @@ export interface ApiResponse<T> {
 
 // auth.model.ts
 export interface LoginRequest {
-  userNameOrEmail: string;
+  email: string;
   password: string;
 }
 
 export interface AuthUser {
   id: number;
-  userName: string;
   email: string;
   firstName: string;
   lastName?: string | null;
@@ -339,7 +338,7 @@ export const routes: Routes = [
 
 | Screen | API | UI |
 |--------|-----|-----|
-| Register | `POST /api/UserInfos` | Form: userName, email, password, firstName, lastName, currency |
+| Register | `POST /api/UserInfos` | Form: email, password, firstName, lastName, currency |
 | Login | `POST /api/Auths/login` | Form + “Sign in with Google” |
 | Google | `POST /api/Auths/google` | GIS button → send `idToken` |
 
@@ -470,7 +469,6 @@ Currency: use `CurrencyPipe` with user's `currencyCode` (default BDT).
 ```http
 POST /api/UserInfos
 {
-  "userName": "hridoy",
   "email": "hridoy@example.com",
   "password": "Secret@123",
   "firstName": "Hridoy",
@@ -483,7 +481,7 @@ POST /api/UserInfos
 
 ```http
 POST /api/Auths/login
-{ "userNameOrEmail": "hridoy", "password": "Secret@123" }
+{ "email": "hridoy@example.com", "password": "Secret@123" }
 ```
 
 ### Google

@@ -4,7 +4,6 @@ public sealed class CreateCoaRequest
 {
     public long? ParentId { get; init; }
     public required long AccountTypeId { get; init; }
-    public required string AccountCode { get; init; }
     public required string AccountName { get; init; }
 }
 

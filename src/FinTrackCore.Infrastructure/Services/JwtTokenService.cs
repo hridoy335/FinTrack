@@ -32,10 +32,11 @@ public class JwtTokenService : IJwtTokenService
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new(JwtRegisteredClaimNames.UniqueName, user.UserName),
+            new(JwtRegisteredClaimNames.UniqueName, user.Email),
             new(JwtRegisteredClaimNames.Email, user.Email),
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Name, user.UserName),
+            new(ClaimTypes.Name, user.FirstName),
+            new(ClaimTypes.Email, user.Email),
             new("uid", user.Id.ToString())
         };
 

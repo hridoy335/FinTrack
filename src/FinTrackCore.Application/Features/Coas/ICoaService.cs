@@ -12,6 +12,15 @@ public interface ICoaService
         long userInfoId,
         CancellationToken ct);
 
+    Task<Outcome<CoaListResponse, HttpBadOutcome>> GetListAsync(
+        long userInfoId,
+        CancellationToken ct);
+
+    Task<Outcome<byte[], HttpBadOutcome>> ExportListPdfAsync(
+        long userInfoId,
+        string userDisplayName,
+        CancellationToken ct);
+
     Task<Outcome<Coa, HttpBadOutcome>> GetByIdAsync(
         long id,
         long userInfoId,

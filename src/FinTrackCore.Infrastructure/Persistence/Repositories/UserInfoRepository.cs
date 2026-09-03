@@ -22,11 +22,6 @@ public sealed class UserInfoRepository : IUserInfoRepository
         return userInfo ?? throw new KeyNotFoundException();
     }
 
-    public Task<UserInfo?> GetByUserNameAsync(string userName, CancellationToken ct)
-    {
-        return _dbContext.UserInfos.FirstOrDefaultAsync(x => x.UserName == userName, ct);
-    }
-
     public Task<UserInfo?> GetByEmailAsync(string email, CancellationToken ct)
     {
         return _dbContext.UserInfos.FirstOrDefaultAsync(x => x.Email == email, ct);

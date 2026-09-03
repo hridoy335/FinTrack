@@ -399,11 +399,6 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
@@ -412,9 +407,6 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                     b.HasIndex("GoogleSubject")
                         .IsUnique()
                         .HasFilter("\"GoogleSubject\" IS NOT NULL");
-
-                    b.HasIndex("UserName")
-                        .IsUnique();
 
                     b.ToTable("UserInfo", (string)null);
                 });

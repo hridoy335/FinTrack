@@ -5,31 +5,31 @@ public static class DefaultCoaConstants
     public static class Codes
     {
         public const string Assets = "10000";
-        public const string Cash = "10100";
-        public const string Bank = "10200";
-        public const string MobileWallet = "10300";
-        public const string Savings = "10400";
-        public const string LoanReceivable = "10500";
+        public const string Cash = "10001";
+        public const string Bank = "10002";
+        public const string MobileWallet = "10003";
+        public const string Savings = "10004";
+        public const string LoanReceivable = "10005";
         public const string Liabilities = "20000";
-        public const string CreditCard = "20100";
-        public const string PersonalLoan = "20200";
+        public const string CreditCard = "20001";
+        public const string PersonalLoan = "20002";
         public const string Equity = "30000";
-        public const string OpeningBalance = "30100";
+        public const string OpeningBalance = "30001";
         public const string Income = "40000";
-        public const string Salary = "40100";
-        public const string FreelanceIncome = "40200";
-        public const string BusinessIncome = "40300";
-        public const string InvestmentIncome = "40400";
+        public const string Salary = "40001";
+        public const string FreelanceIncome = "40002";
+        public const string BusinessIncome = "40003";
+        public const string InvestmentIncome = "40004";
         public const string Expenses = "50000";
-        public const string Food = "50100";
-        public const string Transport = "50200";
-        public const string Rent = "50300";
-        public const string Utilities = "50400";
-        public const string Shopping = "50500";
-        public const string Entertainment = "50600";
-        public const string Health = "50700";
-        public const string Education = "50800";
-        public const string Insurance = "50900";
+        public const string Food = "50001";
+        public const string Transport = "50002";
+        public const string Rent = "50003";
+        public const string Utilities = "50004";
+        public const string Shopping = "50005";
+        public const string Entertainment = "50006";
+        public const string Health = "50007";
+        public const string Education = "50008";
+        public const string Insurance = "50009";
     }
 
     public static class Names

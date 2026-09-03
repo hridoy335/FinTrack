@@ -1,5 +1,12 @@
 namespace FinTrackCore.Application.Features.Reports.Models;
 
+public sealed class DashboardReportQuery
+{
+    public long? FinancialYearId { get; init; }
+    public DateTime? FromDate { get; init; }
+    public DateTime? ToDate { get; init; }
+}
+
 public sealed class DashboardResponse
 {
     public required long FinancialYearId { get; init; }
@@ -9,6 +16,7 @@ public sealed class DashboardResponse
     public required decimal ExpenseThisMonth { get; init; }
     public required decimal NetThisMonth { get; init; }
     public required IReadOnlyList<AccountBalanceItem> AccountBalances { get; init; }
+    public required IReadOnlyList<CashflowCategoryItem> ExpenseCategoriesThisMonth { get; init; }
 }
 
 public sealed class AccountBalanceItem

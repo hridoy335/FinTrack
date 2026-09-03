@@ -1,9 +1,11 @@
 using FinTrackCore.Application.Common.Configuration;
+using FinTrackCore.Application.Constants;
 using FinTrackCore.Application.Features.Coas;
 using FinTrackCore.Application.Features.Coas.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace FinTrackCore.Api.Controllers;
 
@@ -40,6 +42,47 @@ public class CoaController : JsonApiControllerBase
 
         _ = result.TryPickGoodOutcome(out var data);
         return SendResponse(StatusCodes.Status200OK, string.Empty, data);
+    }
+
+    [HttpGet("list")]
+    public async Task<IActionResult> GetList(CancellationToken ct)
+    {
+        var currentUserId = GetCurrentLoggedInUserId();
+        if (currentUserId is null)
+        {
+            return SendResponse(StatusCodes.Status401Unauthorized, _messages.Unauthorized);
+        }
+
+        var result = await _coaService.GetListAsync(currentUserId.Value, ct);
+
+        if (result.TryPickBadOutcome(out var error))
+        {
+            return HttpBadOutcomeResponse(error);
+        }
+
+        _ = result.TryPickGoodOutcome(out var data);
+        return SendResponse(StatusCodes.Status200OK, string.Empty, data);
+    }
+
+    [HttpGet("export/pdf")]
+    public async Task<IActionResult> ExportPdf(CancellationToken ct)
+    {
+        var currentUserId = GetCurrentLoggedInUserId();
+        if (currentUserId is null)
+        {
+            return SendResponse(StatusCodes.Status401Unauthorized, _messages.Unauthorized);
+        }
+
+        var userDisplayName = User.FindFirstValue(ClaimTypes.Name) ?? "User";
+        var result = await _coaService.ExportListPdfAsync(currentUserId.Value, userDisplayName, ct);
+
+        if (result.TryPickBadOutcome(out var error))
+        {
+            return HttpBadOutcomeResponse(error);
+        }
+
+        _ = result.TryPickGoodOutcome(out var pdfBytes);
+        return File(pdfBytes!, CoaExportConstants.PdfContentType, CoaExportConstants.PdfFileName);
     }
 
     [HttpGet("{id}")]
@@ -84,7 +127,7 @@ public class CoaController : JsonApiControllerBase
         return SendResponse(
             StatusCodes.Status201Created,
             data!.Message,
-            new { id = data.Id });
+            new { id = data.Id, accountCode = data.AccountCode });
     }
 
     [HttpPut("{id}")]

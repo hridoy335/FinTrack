@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using FinTrackCore.Application.Common.Configuration;
 using FinTrackCore.Application.Constants;
 using FinTrackCore.Application.Features.Auth.Models;
@@ -56,18 +55,13 @@ public class AuthService : IAuthService
         string? ipAddress,
         CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(request.UserNameOrEmail) || string.IsNullOrWhiteSpace(request.Password))
+        if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
         {
             return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.ValidationFailed);
         }
 
-        var loginKey = request.UserNameOrEmail.Trim();
-        var user = await _userInfoRepository.GetByUserNameAsync(loginKey, ct);
-
-        if (user is null)
-        {
-            user = await _userInfoRepository.GetByEmailAsync(loginKey.ToLowerInvariant(), ct);
-        }
+        var email = request.Email.Trim().ToLowerInvariant();
+        var user = await _userInfoRepository.GetByEmailAsync(email, ct);
 
         if (user is null
             || !user.IsActive
@@ -106,7 +100,7 @@ public class AuthService : IAuthService
                 if (!string.IsNullOrWhiteSpace(user.GoogleSubject)
                     && !string.Equals(user.GoogleSubject, profile.Subject, StringComparison.Ordinal))
                 {
-                    return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.Conflict);
+                    return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.GoogleEmailLinkedToOtherAccount);
                 }
 
                 user.GoogleSubject = profile.Subject;
@@ -118,7 +112,6 @@ public class AuthService : IAuthService
             {
                 user = new UserInfo
                 {
-                    UserName = await CreateUniqueUserNameAsync(profile.Email, ct),
                     Email = profile.Email,
                     PasswordHash = null,
                     GoogleSubject = profile.Subject,
@@ -258,35 +251,9 @@ public class AuthService : IAuthService
         };
     }
 
-    private async Task<string> CreateUniqueUserNameAsync(string email, CancellationToken ct)
-    {
-        var localPart = email.Split('@')[0];
-        var baseName = Regex.Replace(localPart, @"[^a-zA-Z0-9._-]", string.Empty);
-        if (string.IsNullOrWhiteSpace(baseName))
-        {
-            baseName = AuthConstants.DefaultGeneratedUserName;
-        }
-
-        if (baseName.Length > AuthConstants.MaxGeneratedUserNameLength)
-        {
-            baseName = baseName[..AuthConstants.MaxGeneratedUserNameLength];
-        }
-
-        var candidate = baseName;
-        var suffix = 0;
-        while (await _userInfoRepository.GetByUserNameAsync(candidate, ct) is not null)
-        {
-            suffix++;
-            candidate = $"{baseName}{suffix}";
-        }
-
-        return candidate;
-    }
-
     private static LoginUserDto MapUser(UserInfo user) => new()
     {
         Id = user.Id,
-        UserName = user.UserName,
         Email = user.Email,
         FirstName = user.FirstName,
         LastName = user.LastName,

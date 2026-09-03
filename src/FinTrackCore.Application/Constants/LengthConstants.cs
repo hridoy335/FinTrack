@@ -2,7 +2,6 @@ namespace FinTrackCore.Application.Constants;
 
 public static class LengthConstants
 {
-    public const int UserName = 100;
     public const int Email = 320;
     public const int PasswordHash = 500;
     public const int GoogleSubject = 100;
