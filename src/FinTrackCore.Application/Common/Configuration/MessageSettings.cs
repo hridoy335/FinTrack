@@ -18,6 +18,14 @@ public class MessageSettings
     public string LoginSuccess { get; set; } = "Login successful.";
     public string LoginFailed { get; set; } = "Invalid email or password.";
     public string DuplicateEmail { get; set; } = "An account with this email already exists. Please sign in or use a different email.";
+    public string PasswordRecoveryEmailSent { get; set; } = "If this email is registered, a recovery code has been sent. It expires in 5 minutes.";
+    public string RecoveryCodeInvalid { get; set; } = "The recovery code is invalid or has expired.";
+    public string RecoveryCodeVerified { get; set; } = "Recovery code verified. You can now set a new password.";
+    public string PasswordResetSuccess { get; set; } = "Password reset successfully.";
+    public string PasswordResetNotAvailable { get; set; } = "Password reset is not available for this account.";
+    public string InvalidNewPassword { get; set; } = "New password is required.";
+    public string RecoveryCodeEmailSubject { get; set; } = "FinTrack password recovery code";
+    public string RecoveryCodeEmailBody { get; set; } = "Your FinTrack password recovery code is {0}. It expires in {1} minutes.";
     public string LogoutSuccess { get; set; } = "Logged out successfully.";
     public string TokenRefreshed { get; set; } = "Token refreshed successfully.";
     public string InvalidRefreshToken { get; set; } = "Invalid or expired refresh token.";

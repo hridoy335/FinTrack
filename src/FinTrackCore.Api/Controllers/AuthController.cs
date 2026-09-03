@@ -88,6 +88,57 @@ public class AuthController : JsonApiControllerBase
             data!.Message);
     }
 
+    [AllowAnonymous]
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword(
+        [FromBody] ForgotPasswordRequest request,
+        CancellationToken ct)
+    {
+        var result = await _authService.ForgotPasswordAsync(request, ct);
+
+        if (result.TryPickBadOutcome(out var error))
+        {
+            return HttpBadOutcomeResponse(error);
+        }
+
+        _ = result.TryPickGoodOutcome(out var data);
+        return SendResponse(StatusCodes.Status200OK, data!.Message, data);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("verify-recovery-code")]
+    public async Task<IActionResult> VerifyRecoveryCode(
+        [FromBody] VerifyRecoveryCodeRequest request,
+        CancellationToken ct)
+    {
+        var result = await _authService.VerifyRecoveryCodeAsync(request, ct);
+
+        if (result.TryPickBadOutcome(out var error))
+        {
+            return HttpBadOutcomeResponse(error);
+        }
+
+        _ = result.TryPickGoodOutcome(out var data);
+        return SendResponse(StatusCodes.Status200OK, data!.Message, data);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword(
+        [FromBody] ResetPasswordRequest request,
+        CancellationToken ct)
+    {
+        var result = await _authService.ResetPasswordAsync(request, ct);
+
+        if (result.TryPickBadOutcome(out var error))
+        {
+            return HttpBadOutcomeResponse(error);
+        }
+
+        _ = result.TryPickGoodOutcome(out var data);
+        return SendResponse(StatusCodes.Status200OK, data!.Message, data);
+    }
+
     private IActionResult SendTokenResponse(LoginResponse data)
     {
         return SendResponse(

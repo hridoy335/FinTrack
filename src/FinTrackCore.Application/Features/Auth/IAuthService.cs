@@ -24,4 +24,16 @@ public interface IAuthService
     Task<Outcome<LogoutResponse, HttpBadOutcome>> LogoutAsync(
         LogoutRequest request,
         CancellationToken ct);
+
+    Task<Outcome<PasswordRecoveryMessageResponse, HttpBadOutcome>> ForgotPasswordAsync(
+        ForgotPasswordRequest request,
+        CancellationToken ct);
+
+    Task<Outcome<PasswordRecoveryMessageResponse, HttpBadOutcome>> VerifyRecoveryCodeAsync(
+        VerifyRecoveryCodeRequest request,
+        CancellationToken ct);
+
+    Task<Outcome<PasswordRecoveryMessageResponse, HttpBadOutcome>> ResetPasswordAsync(
+        ResetPasswordRequest request,
+        CancellationToken ct);
 }

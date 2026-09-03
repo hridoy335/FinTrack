@@ -22,6 +22,7 @@ public static class DependencyInjection
         services.AddSingleton(Options.Create(new MessageSettings()));
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
         services.Configure<GoogleAuthSettings>(configuration.GetSection(GoogleAuthSettings.SectionName));
+        services.Configure<SmtpSettings>(configuration.GetSection(SmtpSettings.SectionName));
 
         services.AddScoped<IUserInfoService, UserInfoService>();
         services.AddScoped<IAuthService, AuthService>();

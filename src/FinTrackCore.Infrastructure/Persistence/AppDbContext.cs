@@ -7,6 +7,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<UserInfo> UserInfos => Set<UserInfo>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<PasswordRecoveryCode> PasswordRecoveryCodes => Set<PasswordRecoveryCode>();
     public DbSet<AccountType> AccountTypes => Set<AccountType>();
     public DbSet<Coa> Coas => Set<Coa>();
     public DbSet<FinancialYear> FinancialYears => Set<FinancialYear>();
