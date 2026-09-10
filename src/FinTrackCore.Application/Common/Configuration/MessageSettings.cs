@@ -45,6 +45,10 @@ public class MessageSettings
 
     public string InvalidFinancialYear { get; set; } = "Financial year is invalid for this user.";
     public string FinancialYearClosed { get; set; } = "Cannot post to a closed financial year.";
+    public string FinancialYearAlreadyExists { get; set; } = "This financial year already exists.";
+    public string FinancialYearCreateNextSuccess { get; set; } = "Next financial year created successfully.";
+    public string CannotCloseCurrentFinancialYear { get; set; } = "The current financial year cannot be closed.";
+    public string InvalidFinancialYearName { get; set; } = "Financial year name is required.";
     public string InvalidTransactionType { get; set; } = "Invalid transaction type.";
     public string InvalidCoa { get; set; } = "One or more accounts are invalid for this user.";
     public string InvalidCoaForTransactionType { get; set; } = "Accounts do not match the transaction type.";
