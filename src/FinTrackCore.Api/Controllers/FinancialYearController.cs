@@ -1,5 +1,6 @@
 using FinTrackCore.Application.Common.Configuration;
 using FinTrackCore.Application.Features.FinancialYears;
+using FinTrackCore.Application.Features.FinancialYears.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -61,6 +62,29 @@ public class FinancialYearController : JsonApiControllerBase
         return SendResponse(StatusCodes.Status200OK, string.Empty, data);
     }
 
+    [HttpPost("next")]
+    public async Task<IActionResult> CreateNext(CancellationToken ct)
+    {
+        var currentUserId = GetCurrentLoggedInUserId();
+        if (currentUserId is null)
+        {
+            return SendResponse(StatusCodes.Status401Unauthorized, _messages.Unauthorized);
+        }
+
+        var result = await _financialYearService.CreateNextAsync(currentUserId.Value, ct);
+
+        if (result.TryPickBadOutcome(out var error))
+        {
+            return HttpBadOutcomeResponse(error);
+        }
+
+        _ = result.TryPickGoodOutcome(out var data);
+        return SendResponse(
+            StatusCodes.Status201Created,
+            data!.Message,
+            new { id = data.Id });
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(long id, CancellationToken ct)
     {
@@ -79,5 +103,31 @@ public class FinancialYearController : JsonApiControllerBase
 
         _ = result.TryPickGoodOutcome(out var data);
         return SendResponse(StatusCodes.Status200OK, string.Empty, data);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(
+        long id,
+        [FromBody] UpdateFinancialYearRequest request,
+        CancellationToken ct)
+    {
+        var currentUserId = GetCurrentLoggedInUserId();
+        if (currentUserId is null)
+        {
+            return SendResponse(StatusCodes.Status401Unauthorized, _messages.Unauthorized);
+        }
+
+        var result = await _financialYearService.UpdateAsync(id, currentUserId.Value, request, ct);
+
+        if (result.TryPickBadOutcome(out var error))
+        {
+            return HttpBadOutcomeResponse(error);
+        }
+
+        _ = result.TryPickGoodOutcome(out var data);
+        return SendResponse(
+            StatusCodes.Status200OK,
+            data!.Message,
+            new { id = data.Id });
     }
 }

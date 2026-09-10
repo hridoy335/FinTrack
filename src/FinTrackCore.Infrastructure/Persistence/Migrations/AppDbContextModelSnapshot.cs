@@ -195,6 +195,46 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                     b.ToTable("FinancialYear", (string)null);
                 });
 
+            modelBuilder.Entity("FinTrackCore.Domain.Entities.PasswordRecoveryCode", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("CodeHash")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime?>("UsedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("UserInfoId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CodeHash")
+                        .IsUnique();
+
+                    b.HasIndex("UserInfoId");
+
+                    b.ToTable("PasswordRecoveryCode", (string)null);
+                });
+
             modelBuilder.Entity("FinTrackCore.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<long>("Id")
@@ -399,11 +439,6 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
@@ -412,9 +447,6 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                     b.HasIndex("GoogleSubject")
                         .IsUnique()
                         .HasFilter("\"GoogleSubject\" IS NOT NULL");
-
-                    b.HasIndex("UserName")
-                        .IsUnique();
 
                     b.ToTable("UserInfo", (string)null);
                 });
@@ -486,6 +518,17 @@ namespace FinTrackCore.Infrastructure.Persistence.Migrations
                 });
 
             modelBuilder.Entity("FinTrackCore.Domain.Entities.FinancialYear", b =>
+                {
+                    b.HasOne("FinTrackCore.Domain.Entities.UserInfo", "UserInfo")
+                        .WithMany()
+                        .HasForeignKey("UserInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserInfo");
+                });
+
+            modelBuilder.Entity("FinTrackCore.Domain.Entities.PasswordRecoveryCode", b =>
                 {
                     b.HasOne("FinTrackCore.Domain.Entities.UserInfo", "UserInfo")
                         .WithMany()

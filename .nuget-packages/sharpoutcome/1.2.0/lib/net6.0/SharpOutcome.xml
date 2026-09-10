@@ -1,0 +1,766 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SharpOutcome</name>
+    </assembly>
+    <members>
+        <member name="T:SharpOutcome.Helpers.BadOutcome">
+            <summary>
+            Represents a bad outcome.
+            </summary>
+            <param name="Tag">The unique tag of the bad outcome.</param>
+            <param name="Reason">The reason for the bad outcome (optional).</param>
+        </member>
+        <member name="M:SharpOutcome.Helpers.BadOutcome.#ctor(SharpOutcome.Helpers.Enums.BadOutcomeTag,System.String)">
+            <summary>
+            Represents a bad outcome.
+            </summary>
+            <param name="Tag">The unique tag of the bad outcome.</param>
+            <param name="Reason">The reason for the bad outcome (optional).</param>
+        </member>
+        <member name="P:SharpOutcome.Helpers.BadOutcome.Tag">
+            <summary>The unique tag of the bad outcome.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.BadOutcome.Reason">
+            <summary>The reason for the bad outcome (optional).</summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.BadOutcome`1">
+            <summary>
+            Represents a bad outcome.
+            </summary>
+            <typeparam name="TOutcomeTag">The type of the bad outcome.</typeparam>
+            <param name="Tag">The unique tag of the bad outcome.</param>
+            <param name="Reason">The reason for the bad outcome (optional).</param>
+        </member>
+        <member name="M:SharpOutcome.Helpers.BadOutcome`1.#ctor(`0,System.String)">
+            <summary>
+            Represents a bad outcome.
+            </summary>
+            <typeparam name="TOutcomeTag">The type of the bad outcome.</typeparam>
+            <param name="Tag">The unique tag of the bad outcome.</param>
+            <param name="Reason">The reason for the bad outcome (optional).</param>
+        </member>
+        <member name="P:SharpOutcome.Helpers.BadOutcome`1.Tag">
+            <summary>The unique tag of the bad outcome.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.BadOutcome`1.Reason">
+            <summary>The reason for the bad outcome (optional).</summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.BadOutcomeWithPayload`1">
+            <summary>
+            Represents a bad outcome with a payload of type <typeparamref name="TPayload"/>.
+            </summary>
+            <typeparam name="TPayload">The type of the payload.</typeparam>
+            <param name="Tag">The unique tag of the bad outcome.</param>
+            <param name="Payload">The payload that carries contextual data.</param>
+            <param name="Reason">The reason for the bad outcome (optional).</param>
+        </member>
+        <member name="M:SharpOutcome.Helpers.BadOutcomeWithPayload`1.#ctor(SharpOutcome.Helpers.Enums.BadOutcomeTag,`0,System.String)">
+            <summary>
+            Represents a bad outcome with a payload of type <typeparamref name="TPayload"/>.
+            </summary>
+            <typeparam name="TPayload">The type of the payload.</typeparam>
+            <param name="Tag">The unique tag of the bad outcome.</param>
+            <param name="Payload">The payload that carries contextual data.</param>
+            <param name="Reason">The reason for the bad outcome (optional).</param>
+        </member>
+        <member name="P:SharpOutcome.Helpers.BadOutcomeWithPayload`1.Tag">
+            <summary>The unique tag of the bad outcome.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.BadOutcomeWithPayload`1.Payload">
+            <summary>The payload that carries contextual data.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.BadOutcomeWithPayload`1.Reason">
+            <summary>The reason for the bad outcome (optional).</summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.BadOutcomeWithPayload`2">
+            <summary>
+            Represents a bad outcome with a payload of type <typeparamref name="TPayload"/>.
+            </summary>
+            <typeparam name="TOutcomeTag">The type of the bad outcome.</typeparam>
+            <param name="Tag">The unique tag of the bad outcome.</param>
+            <param name="Payload">The payload that carries contextual data.</param>
+            <typeparam name="TPayload">The type of the payload.</typeparam>
+            <param name="Reason">The reason for the bad outcome (optional).</param>
+        </member>
+        <member name="M:SharpOutcome.Helpers.BadOutcomeWithPayload`2.#ctor(`0,`1,System.String)">
+            <summary>
+            Represents a bad outcome with a payload of type <typeparamref name="TPayload"/>.
+            </summary>
+            <typeparam name="TOutcomeTag">The type of the bad outcome.</typeparam>
+            <param name="Tag">The unique tag of the bad outcome.</param>
+            <param name="Payload">The payload that carries contextual data.</param>
+            <typeparam name="TPayload">The type of the payload.</typeparam>
+            <param name="Reason">The reason for the bad outcome (optional).</param>
+        </member>
+        <member name="P:SharpOutcome.Helpers.BadOutcomeWithPayload`2.Tag">
+            <summary>The unique tag of the bad outcome.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.BadOutcomeWithPayload`2.Payload">
+            <summary>The payload that carries contextual data.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.BadOutcomeWithPayload`2.Reason">
+            <summary>The reason for the bad outcome (optional).</summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.Contracts.IBadOutcome">
+            <summary>
+            Enforces a contract for bad outcome.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IBadOutcome.Tag">
+            <summary>
+            Gets the type of the bad outcome.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IBadOutcome.Reason">
+            <summary>
+            Gets the reason for the bad outcome.
+            </summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.Contracts.IBadOutcome`1">
+            <summary>
+            Enforces a contract for bad outcome.
+            </summary>
+            <typeparam name="TOutcomeTag">The type of the unique tag of the bad outcome.</typeparam>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IBadOutcome`1.Tag">
+            <summary>
+            Gets the unique tag of the bad outcome.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IBadOutcome`1.Reason">
+            <summary>
+            Gets the unique tag for the bad outcome.
+            </summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.Contracts.IBadOutcomeWithPayload`1">
+            <summary>
+            Enforces a contract for bad outcome with payload of type <typeparamref name="TPayload"/>.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IBadOutcomeWithPayload`1.Tag">
+            <summary>
+            Gets the unique tag of the bad outcome.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IBadOutcomeWithPayload`1.Payload">
+            <summary>
+            Gets the Payload with the bad outcome.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IBadOutcomeWithPayload`1.Reason">
+            <summary>
+            Gets the reason for the bad outcome.
+            </summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.Contracts.IBadOutcomeWithPayload`2">
+            <summary>
+            Enforces a contract for bad outcome with payload of type <typeparamref name="TPayload"/>.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IBadOutcomeWithPayload`2.Tag">
+            <summary>
+            Gets the unique tag of the bad outcome.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IBadOutcomeWithPayload`2.Payload">
+            <summary>
+            Gets the Payload with the bad outcome.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IBadOutcomeWithPayload`2.Reason">
+            <summary>
+            Gets the reason for the bad outcome.
+            </summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.Contracts.IGoodOutcome">
+            <summary>
+            Enforces a contract for good outcome.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IGoodOutcome.Tag">
+            <summary>
+            Gets the unique tag of the good outcome.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IGoodOutcome.Reason">
+            <summary>
+            Gets the reason for the good outcome.
+            </summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.Contracts.IGoodOutcome`1">
+            <summary>
+            Enforces a contract for good outcome.
+            </summary>
+            <typeparam name="TOutcomeTag">The type of the unique tag of the good outcome.</typeparam>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IGoodOutcome`1.Tag">
+            <summary>
+            Gets the unique tag of the good outcome.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IGoodOutcome`1.Reason">
+            <summary>
+            Gets the reason for the good outcome.
+            </summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.Contracts.IGoodOutcomeWithPayload`1">
+            <summary>
+            Enforces a contract for good outcome with payload of type <typeparamref name="TPayload"/>.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IGoodOutcomeWithPayload`1.Tag">
+            <summary>
+            Gets the unique tag of the good outcome.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IGoodOutcomeWithPayload`1.Payload">
+            <summary>
+            Gets the Payload with the good outcome.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IGoodOutcomeWithPayload`1.Reason">
+            <summary>
+            Gets the reason for the good outcome.
+            </summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.Contracts.IGoodOutcomeWithPayload`2">
+            <summary>
+            Enforces a contract for good outcome with payload of type <typeparamref name="TPayload"/>.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IGoodOutcomeWithPayload`2.Tag">
+            <summary>
+            Gets the unique tag of the good outcome.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IGoodOutcomeWithPayload`2.Payload">
+            <summary>
+            Gets the Payload with the good outcome.
+            </summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.Contracts.IGoodOutcomeWithPayload`2.Reason">
+            <summary>
+            Gets the reason for the good outcome.
+            </summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.Enums.BadOutcomeTag">
+            <summary>
+            Represents the types of bad outcomes.
+            </summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.Enums.GoodOutcomeTag">
+            <summary>
+            Represents the types of good outcomes.
+            </summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.Enums.HttpBadOutcomeTag">
+            <summary>
+            Represents the types of HTTP bad outcomes.
+            </summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.Enums.HttpGoodOutcomeTag">
+            <summary>
+            Represents the types of HTTP good outcomes.
+            </summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.Failed">
+            <summary>
+            Represents a generalized bad outcome.
+            </summary>
+        </member>
+        <member name="M:SharpOutcome.Helpers.Failed.#ctor(System.String)">
+            <summary>
+            Represents a generalized bad outcome.
+            </summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.GoodOutcome">
+            <summary>
+            Represents a good outcome.
+            </summary>
+            <param name="Tag">The unique tag of the good outcome.</param>
+            <param name="Reason">The reason for the good outcome (optional).</param>
+        </member>
+        <member name="M:SharpOutcome.Helpers.GoodOutcome.#ctor(SharpOutcome.Helpers.Enums.GoodOutcomeTag,System.String)">
+            <summary>
+            Represents a good outcome.
+            </summary>
+            <param name="Tag">The unique tag of the good outcome.</param>
+            <param name="Reason">The reason for the good outcome (optional).</param>
+        </member>
+        <member name="P:SharpOutcome.Helpers.GoodOutcome.Tag">
+            <summary>The unique tag of the good outcome.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.GoodOutcome.Reason">
+            <summary>The reason for the good outcome (optional).</summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.GoodOutcome`1">
+            <summary>
+            Represents a good outcome.
+            </summary>
+            <typeparam name="TOutcomeTag">The type of the good outcome.</typeparam>
+            <param name="Tag">The unique tag of the good outcome.</param>
+            <param name="Reason">The reason for the good outcome (optional).</param>
+        </member>
+        <member name="M:SharpOutcome.Helpers.GoodOutcome`1.#ctor(`0,System.String)">
+            <summary>
+            Represents a good outcome.
+            </summary>
+            <typeparam name="TOutcomeTag">The type of the good outcome.</typeparam>
+            <param name="Tag">The unique tag of the good outcome.</param>
+            <param name="Reason">The reason for the good outcome (optional).</param>
+        </member>
+        <member name="P:SharpOutcome.Helpers.GoodOutcome`1.Tag">
+            <summary>The unique tag of the good outcome.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.GoodOutcome`1.Reason">
+            <summary>The reason for the good outcome (optional).</summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.GoodOutcomeWithPayload`1">
+            <summary>
+            Represents a good outcome with a payload of type <typeparamref name="TPayload"/>.
+            </summary>
+            <param name="Tag">The unique tag of the good outcome.</param>
+            <typeparam name="TPayload">The type of the payload.</typeparam>
+            <param name="Payload">The payload that carries contextual data.</param>
+            <param name="Reason">The reason for the good outcome (optional).</param>
+        </member>
+        <member name="M:SharpOutcome.Helpers.GoodOutcomeWithPayload`1.#ctor(SharpOutcome.Helpers.Enums.GoodOutcomeTag,`0,System.String)">
+            <summary>
+            Represents a good outcome with a payload of type <typeparamref name="TPayload"/>.
+            </summary>
+            <param name="Tag">The unique tag of the good outcome.</param>
+            <typeparam name="TPayload">The type of the payload.</typeparam>
+            <param name="Payload">The payload that carries contextual data.</param>
+            <param name="Reason">The reason for the good outcome (optional).</param>
+        </member>
+        <member name="P:SharpOutcome.Helpers.GoodOutcomeWithPayload`1.Tag">
+            <summary>The unique tag of the good outcome.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.GoodOutcomeWithPayload`1.Payload">
+            <summary>The payload that carries contextual data.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.GoodOutcomeWithPayload`1.Reason">
+            <summary>The reason for the good outcome (optional).</summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.GoodOutcomeWithPayload`2">
+            <summary>
+            Represents a good outcome with a payload of type <typeparamref name="TPayload"/>.
+            </summary>
+            <typeparam name="TOutcomeTag">The type of the good outcome.</typeparam>
+            <param name="Tag">The unique tag of the good outcome.</param>
+            <typeparam name="TPayload">The type of the payload.</typeparam>
+            <param name="Payload">The payload that carries contextual data.</param>
+            <param name="Reason">The reason for the good outcome (optional).</param>
+        </member>
+        <member name="M:SharpOutcome.Helpers.GoodOutcomeWithPayload`2.#ctor(`0,`1,System.String)">
+            <summary>
+            Represents a good outcome with a payload of type <typeparamref name="TPayload"/>.
+            </summary>
+            <typeparam name="TOutcomeTag">The type of the good outcome.</typeparam>
+            <param name="Tag">The unique tag of the good outcome.</param>
+            <typeparam name="TPayload">The type of the payload.</typeparam>
+            <param name="Payload">The payload that carries contextual data.</param>
+            <param name="Reason">The reason for the good outcome (optional).</param>
+        </member>
+        <member name="P:SharpOutcome.Helpers.GoodOutcomeWithPayload`2.Tag">
+            <summary>The unique tag of the good outcome.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.GoodOutcomeWithPayload`2.Payload">
+            <summary>The payload that carries contextual data.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.GoodOutcomeWithPayload`2.Reason">
+            <summary>The reason for the good outcome (optional).</summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.HttpBadOutcome">
+            <summary>
+            Represents an HTTP bad outcome.
+            </summary>
+            <param name="Tag">The unique tag of the bad outcome.</param>
+            <param name="Reason">The reason for the bad outcome (optional).</param>
+        </member>
+        <member name="M:SharpOutcome.Helpers.HttpBadOutcome.#ctor(SharpOutcome.Helpers.Enums.HttpBadOutcomeTag,System.String)">
+            <summary>
+            Represents an HTTP bad outcome.
+            </summary>
+            <param name="Tag">The unique tag of the bad outcome.</param>
+            <param name="Reason">The reason for the bad outcome (optional).</param>
+        </member>
+        <member name="P:SharpOutcome.Helpers.HttpBadOutcome.Tag">
+            <summary>The unique tag of the bad outcome.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.HttpBadOutcome.Reason">
+            <summary>The reason for the bad outcome (optional).</summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.HttpBadOutcome`1">
+            <summary>
+            Represents an HTTP bad outcome with a payload of type <typeparamref name="TPayload"/>.
+            </summary>
+            <param name="Tag">The unique tag of the bad outcome.</param>
+            <typeparam name="TPayload">The type of the payload.</typeparam>
+            <param name="Payload">The payload that carries contextual data.</param>
+            <param name="Reason">The reason for the bad outcome (optional).</param>
+        </member>
+        <member name="M:SharpOutcome.Helpers.HttpBadOutcome`1.#ctor(SharpOutcome.Helpers.Enums.HttpBadOutcomeTag,`0,System.String)">
+            <summary>
+            Represents an HTTP bad outcome with a payload of type <typeparamref name="TPayload"/>.
+            </summary>
+            <param name="Tag">The unique tag of the bad outcome.</param>
+            <typeparam name="TPayload">The type of the payload.</typeparam>
+            <param name="Payload">The payload that carries contextual data.</param>
+            <param name="Reason">The reason for the bad outcome (optional).</param>
+        </member>
+        <member name="P:SharpOutcome.Helpers.HttpBadOutcome`1.Tag">
+            <summary>The unique tag of the bad outcome.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.HttpBadOutcome`1.Payload">
+            <summary>The payload that carries contextual data.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.HttpBadOutcome`1.Reason">
+            <summary>The reason for the bad outcome (optional).</summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.HttpGoodOutcome">
+            <summary>
+            Represents an HTTP good outcome.
+            </summary>
+            <param name="Tag">The unique tag of the good outcome.</param>
+            <param name="Reason">The reason for the good outcome (optional).</param>
+        </member>
+        <member name="M:SharpOutcome.Helpers.HttpGoodOutcome.#ctor(SharpOutcome.Helpers.Enums.HttpGoodOutcomeTag,System.String)">
+            <summary>
+            Represents an HTTP good outcome.
+            </summary>
+            <param name="Tag">The unique tag of the good outcome.</param>
+            <param name="Reason">The reason for the good outcome (optional).</param>
+        </member>
+        <member name="P:SharpOutcome.Helpers.HttpGoodOutcome.Tag">
+            <summary>The unique tag of the good outcome.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.HttpGoodOutcome.Reason">
+            <summary>The reason for the good outcome (optional).</summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.HttpGoodOutcome`1">
+            <summary>
+            Represents an HTTP good outcome with a payload of type <typeparamref name="TPayload"/>.
+            </summary>
+            <param name="Tag">The unique tag of the good outcome.</param>
+            <typeparam name="TPayload">The type of the payload.</typeparam>
+            <param name="Payload">The payload that carries contextual data.</param>
+            <param name="Reason">The reason for the good outcome (optional).</param>
+        </member>
+        <member name="M:SharpOutcome.Helpers.HttpGoodOutcome`1.#ctor(SharpOutcome.Helpers.Enums.HttpGoodOutcomeTag,`0,System.String)">
+            <summary>
+            Represents an HTTP good outcome with a payload of type <typeparamref name="TPayload"/>.
+            </summary>
+            <param name="Tag">The unique tag of the good outcome.</param>
+            <typeparam name="TPayload">The type of the payload.</typeparam>
+            <param name="Payload">The payload that carries contextual data.</param>
+            <param name="Reason">The reason for the good outcome (optional).</param>
+        </member>
+        <member name="P:SharpOutcome.Helpers.HttpGoodOutcome`1.Tag">
+            <summary>The unique tag of the good outcome.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.HttpGoodOutcome`1.Payload">
+            <summary>The payload that carries contextual data.</summary>
+        </member>
+        <member name="P:SharpOutcome.Helpers.HttpGoodOutcome`1.Reason">
+            <summary>The reason for the good outcome (optional).</summary>
+        </member>
+        <member name="T:SharpOutcome.Helpers.Successful">
+            <summary>
+            Represents a generalized good outcome.
+            </summary>
+        </member>
+        <member name="M:SharpOutcome.Helpers.Successful.#ctor(System.String)">
+            <summary>
+            Represents a generalized good outcome.
+            </summary>
+        </member>
+        <member name="T:SharpOutcome.Outcome`2">
+            <summary>
+            Represents an outcome that can either be a good outcome of type <typeparamref name="TGoodOutcome"/> or a bad outcome of type <typeparamref name="TBadOutcome"/>.
+            </summary>
+            <typeparam name="TGoodOutcome">The type of the good outcome.</typeparam>
+            <typeparam name="TBadOutcome">The type of the bad outcome.</typeparam>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.op_Implicit(`0)~SharpOutcome.Outcome{`0,`1}">
+            <summary>
+            Implicitly converts a value of type <typeparamref name="TGoodOutcome"/> to an <see cref="T:SharpOutcome.Outcome`2"/> with a good outcome.
+            </summary>
+            <param name="goodOutcome">The value of type <typeparamref name="TGoodOutcome"/> to convert.</param>
+            <returns>A <see cref="T:SharpOutcome.Outcome`2"/> with a good outcome.</returns>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.op_Implicit(`1)~SharpOutcome.Outcome{`0,`1}">
+            <summary>
+            Implicitly converts a value of type <typeparamref name="TBadOutcome"/> to an <see cref="T:SharpOutcome.Outcome`2"/> with a bad outcome.
+            </summary>
+            <param name="badOutcome">The value of type <typeparamref name="TBadOutcome"/> to convert.</param>
+            <returns>A <see cref="T:SharpOutcome.Outcome`2"/> with a bad outcome.</returns>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.IsGoodOutcome">
+            <summary>
+            Gets a boolean value indicating whether the outcome is a good outcome.
+            </summary>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.IsBadOutcome">
+            <summary>
+            Gets a boolean value indicating whether the outcome is a bad outcome.
+            </summary>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.TryPickGoodOutcome(`0@)">
+            <summary>
+            Tries to pick the good outcome from the <see cref="T:SharpOutcome.Outcome`2"/>.
+            </summary>
+            <param name="goodOutcome">When this method returns, contains the good outcome if it exists; otherwise, the default value.</param>
+            <returns><c>true</c> if the good outcome exists; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.TryPickBadOutcome(`1@)">
+            <summary>
+            Tries to pick the bad outcome from the <see cref="T:SharpOutcome.Outcome`2"/>.
+            </summary>
+            <param name="badOutcome">When this method returns, contains the bad outcome if it exists; otherwise, the default value.</param>
+            <returns><c>true</c> if the bad outcome exists; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.TryPickGoodOutcome(`0@,`1@)">
+            <summary>
+            Tries to pick the good outcome from the <see cref="T:SharpOutcome.Outcome`2"/>.
+            </summary>
+            <param name="goodOutcome">When this method returns, contains the good outcome if it exists; otherwise, the default value.</param>
+            <param name="badOutcome">When this method returns, contains the bad outcome if the good outcome does not exists; otherwise, the default value.</param>
+            <returns><c>true</c> if the good outcome exists; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.TryPickBadOutcome(`1@,`0@)">
+            <summary>
+            Tries to pick the bad outcome from the <see cref="T:SharpOutcome.Outcome`2"/>.
+            </summary>
+            <param name="badOutcome">When this method returns, contains the bad outcome if it exists; otherwise, the default value.</param>
+            <param name="goodOutcome">When this method returns, contains the good outcome if the bad outcome does not exists; otherwise, the default value.</param>
+            <returns><c>true</c> if the bad outcome exists; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.Match``1(System.Func{`0,``0},System.Func{`1,``0})">
+            <summary>
+            Matches the outcome and executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <typeparam name="TOutput">The type of the output.</typeparam>
+            <param name="onGoodOutcome">The delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The delegate to execute if the outcome is bad.</param>
+            <returns>The result of executing the appropriate delegate.</returns>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.MatchAsync``1(System.Func{`0,System.Threading.Tasks.Task{``0}},System.Func{`1,System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Matches the outcome and asynchronously executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <typeparam name="TOutput">The type of the output.</typeparam>
+            <param name="onGoodOutcome">The asynchronous delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The asynchronous delegate to execute if the outcome is bad.</param>
+            <returns>A task that represents the asynchronous operation and contains the result of executing the appropriate delegate.</returns>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.MatchAsync``1(System.Func{`0,System.Threading.Tasks.Task{``0}},System.Func{`1,``0})">
+            <summary>
+            Matches the outcome and asynchronously executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <typeparam name="TOutput">The type of the output.</typeparam>
+            <param name="onGoodOutcome">The asynchronous delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The delegate to execute if the outcome is bad.</param>
+            <returns>A task that represents the asynchronous operation and contains the result of executing the appropriate delegate.</returns>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.MatchAsync``1(System.Func{`0,``0},System.Func{`1,System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Matches the outcome and asynchronously executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <typeparam name="TOutput">The type of the output.</typeparam>
+            <param name="onGoodOutcome">The delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The asynchronous delegate to execute if the outcome is bad.</param>
+            <returns>A task that represents the asynchronous operation and contains the result of executing the appropriate delegate.</returns>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.Switch(System.Action{`0},System.Action{`1})">
+            <summary>
+            Executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <param name="onGoodOutcome">The delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The delegate to execute if the outcome is bad.</param>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.SwitchAsync(System.Func{`0,System.Threading.Tasks.Task},System.Func{`1,System.Threading.Tasks.Task})">
+            <summary>
+            Asynchronously executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <param name="onGoodOutcome">The asynchronous delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The asynchronous delegate to execute if the outcome is bad.</param>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.SwitchAsync(System.Func{`0,System.Threading.Tasks.Task},System.Action{`1})">
+            <summary>
+            Asynchronously executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <param name="onGoodOutcome">The asynchronous delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The delegate to execute if the outcome is bad.</param>
+            <returns>A task that represents the asynchronous operation.</returns>
+        </member>
+        <member name="M:SharpOutcome.Outcome`2.SwitchAsync(System.Action{`0},System.Func{`1,System.Threading.Tasks.Task})">
+            <summary>
+            Asynchronously executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <param name="onGoodOutcome">The delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The asynchronous delegate to execute if the outcome is bad.</param>
+        </member>
+        <member name="T:SharpOutcome.ValueOutcome`2">
+            <summary>
+            Represents an outcome that can either be a good outcome of type <typeparamref name="TGoodOutcome"/> or a bad outcome of type <typeparamref name="TBadOutcome"/>.
+            </summary>
+            <typeparam name="TGoodOutcome">The type of the good outcome.</typeparam>
+            <typeparam name="TBadOutcome">The type of the bad outcome.</typeparam>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.op_Implicit(`0)~SharpOutcome.ValueOutcome{`0,`1}">
+            <summary>
+            Implicitly converts a value of type <typeparamref name="TGoodOutcome"/> to a <see cref="T:SharpOutcome.ValueOutcome`2"/> with a good outcome.
+            </summary>
+            <param name="goodOutcome">The value of type <typeparamref name="TGoodOutcome"/> to convert.</param>
+            <returns>A <see cref="T:SharpOutcome.ValueOutcome`2"/> with a good outcome.</returns>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.op_Implicit(`1)~SharpOutcome.ValueOutcome{`0,`1}">
+            <summary>
+            Implicitly converts a value of type <typeparamref name="TBadOutcome"/> to an <see cref="T:SharpOutcome.ValueOutcome`2"/> with a bad outcome.
+            </summary>
+            <param name="badOutcome">The value of type <typeparamref name="TBadOutcome"/> to convert.</param>
+            <returns>A <see cref="T:SharpOutcome.ValueOutcome`2"/> with a bad outcome.</returns>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.IsGoodOutcome">
+            <summary>
+            Gets a boolean value indicating whether the outcome is a good outcome.
+            </summary>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.IsBadOutcome">
+            <summary>
+            Gets a boolean value indicating whether the outcome is a bad outcome.
+            </summary>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.TryPickGoodOutcome(`0@)">
+            <summary>
+            Tries to pick the good outcome from the <see cref="T:SharpOutcome.ValueOutcome`2"/>.
+            </summary>
+            <param name="goodOutcome">When this method returns, contains the good outcome if it exists; otherwise, the default value.</param>
+            <returns><c>true</c> if the good outcome exists; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.TryPickBadOutcome(`1@)">
+            <summary>
+            Tries to pick the bad outcome from the <see cref="T:SharpOutcome.ValueOutcome`2"/>.
+            </summary>
+            <param name="badOutcome">When this method returns, contains the bad outcome if it exists; otherwise, the default value.</param>
+            <returns><c>true</c> if the bad outcome exists; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.TryPickGoodOutcome(`0@,`1@)">
+            <summary>
+            Tries to pick the good outcome from the <see cref="T:SharpOutcome.ValueOutcome`2"/>.
+            </summary>
+            <param name="goodOutcome">When this method returns, contains the good outcome if it exists; otherwise, the default value.</param>
+            <param name="badOutcome">When this method returns, contains the bad outcome if the good outcome does not exist; otherwise, the default value.</param>
+            <returns><c>true</c> if the good outcome exists; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.TryPickBadOutcome(`1@,`0@)">
+            <summary>
+            Tries to pick the bad outcome from the <see cref="T:SharpOutcome.ValueOutcome`2"/>.
+            </summary>
+            <param name="badOutcome">When this method returns, contains the bad outcome if it exists; otherwise, the default value.</param>
+            <param name="goodOutcome">When this method returns, contains the good outcome if the bad outcome does not exist; otherwise, the default value.</param>
+            <returns><c>true</c> if the bad outcome exists; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.Match``1(System.Func{`0,``0},System.Func{`1,``0})">
+            <summary>
+            Matches the outcome and executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <typeparam name="TOutput">The type of the output.</typeparam>
+            <param name="onGoodOutcome">The delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The delegate to execute if the outcome is bad.</param>
+            <returns>The result of executing the appropriate delegate.</returns>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.MatchAsync``1(System.Func{`0,System.Threading.Tasks.Task{``0}},System.Func{`1,System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Matches the outcome and asynchronously executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <typeparam name="TOutput">The type of the output.</typeparam>
+            <param name="onGoodOutcome">The asynchronous delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The asynchronous delegate to execute if the outcome is bad.</param>
+            <returns>A task that represents the asynchronous operation and contains the result of executing the appropriate delegate.</returns>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.MatchAsync``1(System.Func{`0,System.Threading.Tasks.Task{``0}},System.Func{`1,``0})">
+            <summary>
+            Matches the outcome and asynchronously executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <typeparam name="TOutput">The type of the output.</typeparam>
+            <param name="onGoodOutcome">The asynchronous delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The delegate to execute if the outcome is bad.</param>
+            <returns>A task that represents the asynchronous operation and contains the result of executing the appropriate delegate.</returns>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.MatchAsync``1(System.Func{`0,``0},System.Func{`1,System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Matches the outcome and asynchronously executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <typeparam name="TOutput">The type of the output.</typeparam>
+            <param name="onGoodOutcome">The delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The asynchronous delegate to execute if the outcome is bad.</param>
+            <returns>A task that represents the asynchronous operation and contains the result of executing the appropriate delegate.</returns>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.Switch(System.Action{`0},System.Action{`1})">
+            <summary>
+            Executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <param name="onGoodOutcome">The delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The delegate to execute if the outcome is bad.</param>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.SwitchAsync(System.Func{`0,System.Threading.Tasks.Task},System.Func{`1,System.Threading.Tasks.Task})">
+            <summary>
+            Asynchronously executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <param name="onGoodOutcome">The asynchronous delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The asynchronous delegate to execute if the outcome is bad.</param>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.SwitchAsync(System.Func{`0,System.Threading.Tasks.Task},System.Action{`1})">
+            <summary>
+            Asynchronously executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <param name="onGoodOutcome">The asynchronous delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The delegate to execute if the outcome is bad.</param>
+            <returns>A task that represents the asynchronous operation.</returns>
+        </member>
+        <member name="M:SharpOutcome.ValueOutcome`2.SwitchAsync(System.Action{`0},System.Func{`1,System.Threading.Tasks.Task})">
+            <summary>
+            Asynchronously executes the appropriate delegate based on whether the outcome is good or bad.
+            </summary>
+            <param name="onGoodOutcome">The delegate to execute if the outcome is good.</param>
+            <param name="onBadOutcome">The asynchronous delegate to execute if the outcome is bad.</param>
+        </member>
+        <member name="T:SharpOutcome.Wrappers.NullableNonPrimitive`1">
+            <summary>
+            Can be used to wrap nullable reference type data.
+            </summary>
+            <param name="Data">The underlying data.</param>
+            <typeparam name="T">The type of underlying data.</typeparam>
+        </member>
+        <member name="M:SharpOutcome.Wrappers.NullableNonPrimitive`1.#ctor(`0)">
+            <summary>
+            Can be used to wrap nullable reference type data.
+            </summary>
+            <param name="Data">The underlying data.</param>
+            <typeparam name="T">The type of underlying data.</typeparam>
+        </member>
+        <member name="P:SharpOutcome.Wrappers.NullableNonPrimitive`1.Data">
+            <summary>The underlying data.</summary>
+        </member>
+        <member name="T:SharpOutcome.Wrappers.NullablePrimitive`1">
+            <summary>
+            Can be used to wrap nullable value type data.
+            </summary>
+            <param name="Data">The underlying data.</param>
+            <typeparam name="T">The type of underlying data.</typeparam>
+        </member>
+        <member name="M:SharpOutcome.Wrappers.NullablePrimitive`1.#ctor(System.Nullable{`0})">
+            <summary>
+            Can be used to wrap nullable value type data.
+            </summary>
+            <param name="Data">The underlying data.</param>
+            <typeparam name="T">The type of underlying data.</typeparam>
+        </member>
+        <member name="P:SharpOutcome.Wrappers.NullablePrimitive`1.Data">
+            <summary>The underlying data.</summary>
+        </member>
+    </members>
+</doc>

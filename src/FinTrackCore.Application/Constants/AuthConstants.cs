@@ -7,6 +7,4 @@ public static class AuthConstants
     public const int JwtMinKeyLength = 32;
     public const int RefreshTokenByteLength = 64;
     public const int SecondsPerMinute = 60;
-    public const int MaxGeneratedUserNameLength = 80;
-    public const string DefaultGeneratedUserName = "user";
 }

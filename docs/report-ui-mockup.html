@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinTrack — Reports UI Mockup</title>
+  <style>
+    :root {
+      --primary: #1565c0;
+      --income: #2e7d32;
+      --expense: #c62828;
+      --surface: #fafafa;
+      --card: #ffffff;
+      --border: #e0e0e0;
+      --text: #212121;
+      --muted: #757575;
+      --sidebar: #0d47a1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--surface);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: var(--sidebar);
+      color: #fff;
+      padding: 24px 16px;
+    }
+
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+      padding: 0 8px;
+    }
+
+    .nav a {
+      display: block;
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+
+    .nav a:hover, .nav a.active {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+    }
+
+    .main { padding: 24px 32px; }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .topbar h1 { font-size: 1.5rem; font-weight: 600; }
+    .topbar .meta { color: var(--muted); font-size: 0.9rem; }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      border: 1px solid var(--border);
+      background: var(--card);
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+
+    .tab.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .card-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .card-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .income { color: var(--income); }
+    .expense { color: var(--expense); }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .amount-right { text-align: right; font-variant-numeric: tabular-nums; }
+
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      height: 160px;
+      padding-top: 16px;
+    }
+
+    .bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bars {
+      display: flex;
+      gap: 4px;
+      align-items: flex-end;
+      height: 120px;
+    }
+
+    .bar {
+      width: 16px;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .bar.income { background: var(--income); }
+    .bar.expense { background: var(--expense); }
+
+    .bar-label { font-size: 0.75rem; color: var(--muted); }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .summary-row:last-child { border-bottom: none; font-weight: 600; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      background: #e3f2fd;
+      color: var(--primary);
+    }
+
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .cards { grid-template-columns: 1fr 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">FinTrack</div>
+      <nav class="nav">
+        <a href="#" class="active" data-nav="dashboard">Dashboard</a>
+        <a href="#" data-nav="cashflow">Cashflow</a>
+        <a href="#" data-nav="balance">Balance Sheet</a>
+        <a href="#" data-nav="statement">Account Statement</a>
+        <a href="#" data-nav="monthly">Monthly Cashflow</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1 id="page-title">Dashboard</h1>
+          <div class="meta">Financial Year 2026 · BDT</div>
+        </div>
+        <div class="meta">Hello, Suvo</div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <section id="dashboard" class="panel active">
+        <div class="cards">
+          <div class="card">
+            <div class="card-label">Total Balance</div>
+            <div class="card-value">৳ 125,000</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Income This Month</div>
+            <div class="card-value income">৳ 50,000</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Expense This Month</div>
+            <div class="card-value expense">৳ 18,500</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Net This Month</div>
+            <div class="card-value income">৳ 31,500</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="section-title">Account Balances</div>
+            <table>
+              <thead>
+                <tr><th>Account</th><th>Type</th><th class="amount-right">Balance</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>10100 Cash</td><td><span class="badge">Asset</span></td><td class="amount-right">৳ 5,000</td></tr>
+                <tr><td>10200 Bank</td><td><span class="badge">Asset</span></td><td class="amount-right">৳ 120,000</td></tr>
+                <tr><td>10300 Mobile Wallet</td><td><span class="badge">Asset</span></td><td class="amount-right">৳ 0</td></tr>
+                <tr><td>20100 Credit Card</td><td><span class="badge">Liability</span></td><td class="amount-right">৳ 0</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <div class="section-title">This Month at a Glance</div>
+            <div class="bar-chart">
+              <div class="bar-group">
+                <div class="bars">
+                  <div class="bar income" style="height: 100px"></div>
+                  <div class="bar expense" style="height: 37px"></div>
+                </div>
+                <div class="bar-label">Aug</div>
+              </div>
+            </div>
+            <div style="margin-top: 16px; font-size: 0.85rem; color: var(--muted);">
+              <span style="color: var(--income);">■</span> Income &nbsp;
+              <span style="color: var(--expense);">■</span> Expense
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CASHFLOW -->
+      <section id="cashflow" class="panel">
+        <div class="cards" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="card">
+            <div class="card-label">Total Inflow</div>
+            <div class="card-value income">৳ 85,000</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Total Outflow</div>
+            <div class="card-value expense">৳ 42,000</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Net Cashflow</div>
+            <div class="card-value income">৳ 43,000</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="section-title">Inflows (Income)</div>
+            <table>
+              <thead><tr><th>Account</th><th class="amount-right">Amount</th></tr></thead>
+              <tbody>
+                <tr><td>40100 Salary</td><td class="amount-right income">৳ 70,000</td></tr>
+                <tr><td>40200 Freelance Income</td><td class="amount-right income">৳ 15,000</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="section-title">Outflows (Expense)</div>
+            <table>
+              <thead><tr><th>Account</th><th class="amount-right">Amount</th></tr></thead>
+              <tbody>
+                <tr><td>50100 Food</td><td class="amount-right expense">৳ 12,000</td></tr>
+                <tr><td>50200 Transport</td><td class="amount-right expense">৳ 8,000</td></tr>
+                <tr><td>50400 Rent</td><td class="amount-right expense">৳ 22,000</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- BALANCE SHEET -->
+      <section id="balance" class="panel">
+        <div class="cards" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="card"><div class="card-label">Assets</div><div class="card-value">৳ 125,000</div></div>
+          <div class="card"><div class="card-label">Liabilities</div><div class="card-value">৳ 0</div></div>
+          <div class="card"><div class="card-label">Equity</div><div class="card-value">৳ 5,000</div></div>
+          <div class="card"><div class="card-label">Net Worth</div><div class="card-value income">৳ 125,000</div></div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Assets</div>
+          <table>
+            <tbody>
+              <tr><td>10100 Cash</td><td class="amount-right">৳ 5,000</td></tr>
+              <tr><td>10200 Bank</td><td class="amount-right">৳ 120,000</td></tr>
+              <tr><td colspan="2" style="font-weight:600; background:#f5f5f5;">Subtotal: ৳ 125,000</td></tr>
+            </tbody>
+          </table>
+
+          <div class="section-title" style="margin-top: 24px;">Equity</div>
+          <table>
+            <tbody>
+              <tr><td>30100 Opening Balance</td><td class="amount-right">৳ 5,000</td></tr>
+              <tr><td colspan="2" style="font-weight:600; background:#f5f5f5;">Subtotal: ৳ 5,000</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ACCOUNT STATEMENT -->
+      <section id="statement" class="panel">
+        <div class="card" style="margin-bottom: 16px;">
+          <div class="section-title">10200 Bank — Account Statement</div>
+          <div style="display:flex; gap:32px; font-size:0.9rem; color: var(--muted);">
+            <span>Opening: <strong style="color:var(--text)">৳ 100,000</strong></span>
+            <span>Closing: <strong style="color:var(--text)">৳ 120,000</strong></span>
+            <span>Period: Aug 1 – Aug 31, 2026</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Counterparty</th>
+                <th class="amount-right">Debit</th>
+                <th class="amount-right">Credit</th>
+                <th class="amount-right">Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Aug 5</td>
+                <td>August salary</td>
+                <td>Income</td>
+                <td>Salary</td>
+                <td class="amount-right">50,000</td>
+                <td class="amount-right">—</td>
+                <td class="amount-right">150,000</td>
+              </tr>
+              <tr>
+                <td>Aug 15</td>
+                <td>Rent payment</td>
+                <td>Expense</td>
+                <td>Rent</td>
+                <td class="amount-right">—</td>
+                <td class="amount-right">22,000</td>
+                <td class="amount-right">128,000</td>
+              </tr>
+              <tr>
+                <td>Aug 20</td>
+                <td>Transfer to cash</td>
+                <td>Transfer</td>
+                <td>Cash</td>
+                <td class="amount-right">—</td>
+                <td class="amount-right">8,000</td>
+                <td class="amount-right">120,000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- MONTHLY CASHFLOW -->
+      <section id="monthly" class="panel">
+        <div class="cards" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="card"><div class="card-label">Total Income</div><div class="card-value income">৳ 85,000</div></div>
+          <div class="card"><div class="card-label">Total Expense</div><div class="card-value expense">৳ 42,000</div></div>
+          <div class="card"><div class="card-label">Total Net</div><div class="card-value income">৳ 43,000</div></div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Monthly Trend</div>
+          <div class="bar-chart">
+            <div class="bar-group">
+              <div class="bars"><div class="bar income" style="height:90px"></div><div class="bar expense" style="height:36px"></div></div>
+              <div class="bar-label">Jan</div>
+            </div>
+            <div class="bar-group">
+              <div class="bars"><div class="bar income" style="height:90px"></div><div class="bar expense" style="height:42px"></div></div>
+              <div class="bar-label">Feb</div>
+            </div>
+            <div class="bar-group">
+              <div class="bars"><div class="bar income" style="height:90px"></div><div class="bar expense" style="height:33px"></div></div>
+              <div class="bar-label">Aug</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 16px;">
+          <table>
+            <thead><tr><th>Month</th><th class="amount-right">Income</th><th class="amount-right">Expense</th><th class="amount-right">Net</th></tr></thead>
+            <tbody>
+              <tr><td>Jan 2026</td><td class="amount-right income">50,000</td><td class="amount-right expense">18,000</td><td class="amount-right">32,000</td></tr>
+              <tr><td>Feb 2026</td><td class="amount-right income">50,000</td><td class="amount-right expense">21,000</td><td class="amount-right">29,000</td></tr>
+              <tr><td>Aug 2026</td><td class="amount-right income">50,000</td><td class="amount-right expense">18,500</td><td class="amount-right">31,500</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const titles = {
+      dashboard: 'Dashboard',
+      cashflow: 'Cashflow Report',
+      balance: 'Balance Sheet',
+      statement: 'Account Statement',
+      monthly: 'Monthly Cashflow'
+    };
+
+    document.querySelectorAll('.nav a').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const id = link.dataset.nav;
+        document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        link.classList.add('active');
+        document.getElementById(id).classList.add('active');
+        document.getElementById('page-title').textContent = titles[id];
+      });
+    });
+  </script>
+</body>
+</html>

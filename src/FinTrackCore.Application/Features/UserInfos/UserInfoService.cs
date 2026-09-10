@@ -43,22 +43,15 @@ public class UserInfoService : IUserInfoService
         CreateUserInfoRequest request,
         CancellationToken ct)
     {
-        var userName = request.UserName.Trim();
         var email = request.Email.Trim().ToLowerInvariant();
-
-        if (await _userInfoRepository.GetByUserNameAsync(userName, ct) is not null)
-        {
-            return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.Conflict);
-        }
 
         if (await _userInfoRepository.GetByEmailAsync(email, ct) is not null)
         {
-            return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.Conflict);
+            return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.DuplicateEmail);
         }
 
         var userInfo = new UserInfo
         {
-            UserName = userName,
             Email = email,
             PasswordHash = _passwordService.Hash(request.Password),
             FirstName = request.FirstName.Trim(),
@@ -92,22 +85,14 @@ public class UserInfoService : IUserInfoService
     {
         var userInfo = await _userInfoRepository.GetByIdAsync(id, ct);
 
-        var userName = request.UserName.Trim();
         var email = request.Email.Trim().ToLowerInvariant();
-
-        var existingByUserName = await _userInfoRepository.GetByUserNameAsync(userName, ct);
-        if (existingByUserName is not null && existingByUserName.Id != id)
-        {
-            return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.Conflict);
-        }
 
         var existingByEmail = await _userInfoRepository.GetByEmailAsync(email, ct);
         if (existingByEmail is not null && existingByEmail.Id != id)
         {
-            return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.Conflict);
+            return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.DuplicateEmail);
         }
 
-        userInfo.UserName = userName;
         userInfo.Email = email;
         userInfo.FirstName = request.FirstName.Trim();
         userInfo.LastName = string.IsNullOrWhiteSpace(request.LastName) ? null : request.LastName.Trim();
@@ -141,7 +126,6 @@ public class UserInfoService : IUserInfoService
         return new UserInfoResponse
         {
             Id = userInfo.Id,
-            UserName = userInfo.UserName,
             Email = userInfo.Email,
             FirstName = userInfo.FirstName,
             LastName = userInfo.LastName,

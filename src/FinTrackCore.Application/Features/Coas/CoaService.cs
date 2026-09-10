@@ -1,6 +1,8 @@
 using FinTrackCore.Application.Common.Configuration;
 using FinTrackCore.Application.Common.Models;
+using FinTrackCore.Application.Constants;
 using FinTrackCore.Application.Features.Coas.Models;
+using FinTrackCore.Application.Interfaces;
 using FinTrackCore.Domain.Entities;
 using FinTrackCore.Domain.Repositories;
 using Microsoft.Extensions.Options;
@@ -15,17 +17,20 @@ public sealed class CoaService : ICoaService
     private readonly ICoaRepository _coaRepository;
     private readonly IAccountTypeRepository _accountTypeRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICoaListPdfExporter _coaListPdfExporter;
     private readonly MessageSettings _messages;
 
     public CoaService(
         ICoaRepository coaRepository,
         IAccountTypeRepository accountTypeRepository,
         IUnitOfWork unitOfWork,
+        ICoaListPdfExporter coaListPdfExporter,
         IOptions<MessageSettings> messageOptions)
     {
         _coaRepository = coaRepository;
         _accountTypeRepository = accountTypeRepository;
         _unitOfWork = unitOfWork;
+        _coaListPdfExporter = coaListPdfExporter;
         _messages = messageOptions.Value;
     }
 
@@ -34,6 +39,33 @@ public sealed class CoaService : ICoaService
         CancellationToken ct)
     {
         return (await _coaRepository.GetAllForUserAsync(userInfoId, ct)).ToList();
+    }
+
+    public async Task<Outcome<CoaListResponse, HttpBadOutcome>> GetListAsync(
+        long userInfoId,
+        CancellationToken ct)
+    {
+        var coas = await _coaRepository.GetAllForUserAsync(userInfoId, ct);
+        var usedCoaIds = await _coaRepository.GetCoaIdsUsedInTransactionsAsync(userInfoId, ct);
+        return MapToListResponse(coas, usedCoaIds);
+    }
+
+    public async Task<Outcome<byte[], HttpBadOutcome>> ExportListPdfAsync(
+        long userInfoId,
+        string userDisplayName,
+        CancellationToken ct)
+    {
+        var listResult = await GetListAsync(userInfoId, ct);
+
+        if (listResult.TryPickBadOutcome(out var error))
+        {
+            return error;
+        }
+
+        listResult.TryPickGoodOutcome(out var list);
+        var pdfBytes = _coaListPdfExporter.Generate(list!, userDisplayName);
+
+        return pdfBytes;
     }
 
     public async Task<Outcome<Coa, HttpBadOutcome>> GetByIdAsync(
@@ -49,18 +81,34 @@ public sealed class CoaService : ICoaService
         CreateCoaRequest request,
         CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(request.AccountCode) || string.IsNullOrWhiteSpace(request.AccountName))
+        if (string.IsNullOrWhiteSpace(request.AccountName))
         {
             return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.ValidationFailed);
         }
 
+        if (!CoaConstants.IsValidAccountTypeId(request.AccountTypeId))
+        {
+            return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.InvalidAccountType);
+        }
+
         _ = await _accountTypeRepository.GetByIdAsync(request.AccountTypeId, ct);
 
-        var code = request.AccountCode.Trim();
-        if (await _coaRepository.ExistsByCodeForUserAsync(code, userInfoId, ct))
+        var accountName = request.AccountName.Trim();
+        if (await _coaRepository.ExistsByAccountNameForUserAndAccountTypeAsync(
+                userInfoId,
+                request.AccountTypeId,
+                accountName,
+                excludeCoaId: null,
+                ct))
         {
-            return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.Conflict);
+            return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.DuplicateAccountHeadName);
         }
+
+        var existingCodes = await _coaRepository.GetAccountCodesForUserAndAccountTypeAsync(
+            userInfoId,
+            request.AccountTypeId,
+            ct);
+        var code = CoaConstants.GetNextAccountCode(request.AccountTypeId, existingCodes);
 
         if (request.ParentId is not null)
         {
@@ -77,7 +125,7 @@ public sealed class CoaService : ICoaService
             ParentId = request.ParentId,
             AccountTypeId = request.AccountTypeId,
             AccountCode = code,
-            AccountName = request.AccountName.Trim(),
+            AccountName = accountName,
             IsSystemDefault = false,
             IsActive = true,
             CreatedDate = DateTime.UtcNow
@@ -89,7 +137,8 @@ public sealed class CoaService : ICoaService
         return new MutationResult
         {
             Id = coa.Id,
-            Message = _messages.InsertSuccess
+            Message = _messages.InsertSuccess,
+            AccountCode = coa.AccountCode
         };
     }
 
@@ -106,6 +155,11 @@ public sealed class CoaService : ICoaService
 
         var coa = await _coaRepository.GetByIdForUserAsync(id, userInfoId, ct);
 
+        if (coa.IsSystemDefault)
+        {
+            return new HttpBadOutcome(HttpBadOutcomeTag.Forbidden, _messages.SystemAccountUpdateForbidden);
+        }
+
         if (request.ParentId == id)
         {
             return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.InvalidParentAccount);
@@ -120,8 +174,19 @@ public sealed class CoaService : ICoaService
             }
         }
 
+        var accountName = request.AccountName.Trim();
+        if (await _coaRepository.ExistsByAccountNameForUserAndAccountTypeAsync(
+                userInfoId,
+                coa.AccountTypeId,
+                accountName,
+                excludeCoaId: id,
+                ct))
+        {
+            return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.DuplicateAccountHeadName);
+        }
+
         coa.ParentId = request.ParentId;
-        coa.AccountName = request.AccountName.Trim();
+        coa.AccountName = accountName;
         coa.IsActive = request.IsActive;
         coa.UpdatedDate = DateTime.UtcNow;
 
@@ -149,7 +214,12 @@ public sealed class CoaService : ICoaService
 
         if (await _coaRepository.HasChildrenAsync(id, userInfoId, ct))
         {
-            return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.Conflict);
+            return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.CoaHasChildrenDeleteForbidden);
+        }
+
+        if (await _coaRepository.IsUsedInTransactionsAsync(id, userInfoId, ct))
+        {
+            return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.CoaInUseDeleteForbidden);
         }
 
         _unitOfWork.Remove(coa);
@@ -160,5 +230,42 @@ public sealed class CoaService : ICoaService
             Id = id,
             Message = _messages.DeleteSuccess
         };
+    }
+
+    private static CoaListResponse MapToListResponse(
+        IReadOnlyList<Coa> coas,
+        IReadOnlySet<long> usedCoaIds)
+    {
+        var sections = coas
+            .GroupBy(x => new
+            {
+                x.AccountTypeId,
+                AccountTypeCode = x.AccountType!.Code,
+                AccountTypeName = x.AccountType.Name
+            })
+            .OrderBy(x => x.Key.AccountTypeId)
+            .Select(group => new CoaListSectionResponse
+            {
+                AccountTypeId = group.Key.AccountTypeId,
+                AccountTypeCode = group.Key.AccountTypeCode,
+                AccountTypeName = group.Key.AccountTypeName,
+                Items = group
+                    .OrderBy(x => x.AccountCode)
+                    .Select(x => new CoaListItemResponse
+                    {
+                        Id = x.Id,
+                        Code = x.AccountCode,
+                        AccountHeadName = x.AccountName,
+                        ParentId = x.ParentId,
+                        IsSystemDefault = x.IsSystemDefault,
+                        IsActive = x.IsActive,
+                        CanEdit = !x.IsSystemDefault,
+                        CanDelete = !x.IsSystemDefault && !usedCoaIds.Contains(x.Id)
+                    })
+                    .ToList()
+            })
+            .ToList();
+
+        return new CoaListResponse { Sections = sections };
     }
 }

@@ -104,7 +104,7 @@ Logout → POST /api/Auths/logout → clear storage
 
 | Method | Route | Auth | Description |
 |--------|-------|------|-------------|
-| POST | `/api/Auths/login` | No | Login with username/email + password |
+| POST | `/api/Auths/login` | No | Login with email + password |
 | POST | `/api/Auths/google` | No | Google sign-in / sign-up |
 | POST | `/api/Auths/refresh` | No | Refresh access token |
 | POST | `/api/Auths/logout` | No | Revoke refresh token |
@@ -115,7 +115,7 @@ Logout → POST /api/Auths/logout → clear storage
 
 ```json
 {
-  "userNameOrEmail": "hridoy",
+  "email": "hridoy@example.com",
   "password": "Secret@123"
 }
 ```
@@ -129,7 +129,6 @@ Logout → POST /api/Auths/logout → clear storage
   "expiresIn": 900,
   "user": {
     "id": 1,
-    "userName": "hridoy",
     "email": "hridoy@example.com",
     "firstName": "Hridoy",
     "lastName": "Ahmed",
@@ -200,13 +199,11 @@ Logout → POST /api/Auths/logout → clear storage
 
 ```json
 {
-  "userName": "hridoy",
   "email": "hridoy@example.com",
   "password": "Secret@123",
   "firstName": "Hridoy",
   "lastName": "Ahmed",
-  "currencyCode": "BDT",
-  "isActive": true
+  "currencyCode": "BDT"
 }
 ```
 
@@ -227,7 +224,6 @@ Logout → POST /api/Auths/logout → clear storage
 ```json
 {
   "id": 1,
-  "userName": "hridoy",
   "email": "hridoy@example.com",
   "firstName": "Hridoy",
   "lastName": "Ahmed",
@@ -244,7 +240,6 @@ Logout → POST /api/Auths/logout → clear storage
 
 ```json
 {
-  "userName": "hridoy",
   "email": "hridoy@example.com",
   "password": "NewSecret@123",
   "firstName": "Hridoy",
@@ -746,7 +741,6 @@ export interface AuthTokenData {
 
 export interface AuthUser {
   id: number;
-  userName: string;
   email: string;
   firstName: string;
   lastName?: string | null;
@@ -755,7 +749,6 @@ export interface AuthUser {
 
 export interface UserInfo {
   id: number;
-  userName: string;
   email: string;
   firstName: string;
   lastName?: string | null;

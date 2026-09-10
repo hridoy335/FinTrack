@@ -1,5 +1,7 @@
 using FinTrackCore.Application.Common.Configuration;
+using FinTrackCore.Application.Common.Models;
 using FinTrackCore.Application.Constants;
+using FinTrackCore.Application.Features.FinancialYears.Models;
 using FinTrackCore.Domain.Entities;
 using FinTrackCore.Domain.Repositories;
 using Microsoft.Extensions.Options;
@@ -25,18 +27,16 @@ public sealed class FinancialYearService : IFinancialYearService
         _messages = messageOptions.Value;
     }
 
-    public async Task<Outcome<IReadOnlyList<FinancialYear>, HttpBadOutcome>> GetAllAsync(
+    public async Task<Outcome<IReadOnlyList<FinancialYearListItem>, HttpBadOutcome>> GetAllAsync(
         long userInfoId,
         CancellationToken ct)
     {
         await SyncFinancialYearsAsync(userInfoId, ct);
 
         var currentYear = DateTime.UtcNow.Year;
-        var minVisibleYear = GetMinVisibleYear(currentYear);
-
         var years = (await _financialYearRepository.GetAllForUserAsync(userInfoId, ct))
-            .Where(x => x.Year >= minVisibleYear && x.Year <= currentYear)
             .OrderByDescending(x => x.Year)
+            .Select(x => MapListItem(x, currentYear))
             .ToList();
 
         return years;
@@ -48,15 +48,7 @@ public sealed class FinancialYearService : IFinancialYearService
         CancellationToken ct)
     {
         await SyncFinancialYearsAsync(userInfoId, ct);
-
-        var financialYear = await _financialYearRepository.GetByIdForUserAsync(id, userInfoId, ct);
-
-        if (!IsYearVisible(financialYear.Year))
-        {
-            return new HttpBadOutcome(HttpBadOutcomeTag.NotFound, _messages.NotFound);
-        }
-
-        return financialYear;
+        return await _financialYearRepository.GetByIdForUserAsync(id, userInfoId, ct);
     }
 
     public async Task<Outcome<FinancialYear, HttpBadOutcome>> GetCurrentAsync(
@@ -74,6 +66,77 @@ public sealed class FinancialYearService : IFinancialYearService
         }
 
         return financialYear;
+    }
+
+    public async Task<Outcome<MutationResult, HttpBadOutcome>> CreateNextAsync(
+        long userInfoId,
+        CancellationToken ct)
+    {
+        await SyncFinancialYearsAsync(userInfoId, ct);
+
+        var years = await _financialYearRepository.GetAllForUserAsync(userInfoId, ct);
+        var currentYear = DateTime.UtcNow.Year;
+        var maxYear = years.Count == 0
+            ? currentYear
+            : Math.Max(years.Max(x => x.Year), currentYear);
+
+        var nextYear = maxYear + 1;
+
+        if (await _financialYearRepository.ExistsForUserAndYearAsync(nextYear, userInfoId, ct))
+        {
+            return new HttpBadOutcome(HttpBadOutcomeTag.Conflict, _messages.FinancialYearAlreadyExists);
+        }
+
+        var now = DateTime.UtcNow;
+        var financialYear = DefaultFinancialYearSeedService.CreateFinancialYear(
+            userInfoId,
+            nextYear,
+            isActive: false,
+            isClosed: false,
+            now);
+
+        await _unitOfWork.AddAsync(financialYear, ct);
+        await _unitOfWork.SaveChangesAsync(ct);
+
+        return new MutationResult
+        {
+            Id = financialYear.Id,
+            Message = _messages.FinancialYearCreateNextSuccess
+        };
+    }
+
+    public async Task<Outcome<MutationResult, HttpBadOutcome>> UpdateAsync(
+        long id,
+        long userInfoId,
+        UpdateFinancialYearRequest request,
+        CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(request.Name))
+        {
+            return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.InvalidFinancialYearName);
+        }
+
+        var financialYear = await _financialYearRepository.GetByIdForUserAsync(id, userInfoId, ct);
+        var currentYear = DateTime.UtcNow.Year;
+
+        if (financialYear.Year == currentYear && request.IsClosed)
+        {
+            return new HttpBadOutcome(HttpBadOutcomeTag.BadRequest, _messages.CannotCloseCurrentFinancialYear);
+        }
+
+        financialYear.Name = request.Name.Trim();
+        financialYear.IsClosed = request.IsClosed;
+        financialYear.IsActive = financialYear.Year == currentYear && !request.IsClosed;
+        financialYear.UpdatedDate = DateTime.UtcNow;
+
+        _unitOfWork.Update(financialYear);
+        await _unitOfWork.SaveChangesAsync(ct);
+
+        return new MutationResult
+        {
+            Id = financialYear.Id,
+            Message = _messages.UpdateSuccess
+        };
     }
 
     private async Task SyncFinancialYearsAsync(long userInfoId, CancellationToken ct)
@@ -103,6 +166,14 @@ public sealed class FinancialYearService : IFinancialYearService
             {
                 if (financialYear.Year > currentYear)
                 {
+                    if (financialYear.IsActive)
+                    {
+                        financialYear.IsActive = false;
+                        financialYear.UpdatedDate = now;
+                        _unitOfWork.Update(financialYear);
+                        hasChanges = true;
+                    }
+
                     continue;
                 }
 
@@ -137,20 +208,17 @@ public sealed class FinancialYearService : IFinancialYearService
         }, ct);
     }
 
-    private static int GetMinVisibleYear(int currentYear)
-    {
-        return currentYear - FinancialYearConstants.MaxVisibleYears + 1;
-    }
-
-    private static bool IsYearVisible(int year)
-    {
-        var currentYear = DateTime.UtcNow.Year;
-
-        if (year > currentYear)
+    private static FinancialYearListItem MapListItem(FinancialYear year, int currentYear) =>
+        new()
         {
-            return false;
-        }
-
-        return year >= GetMinVisibleYear(currentYear);
-    }
+            Id = year.Id,
+            Year = year.Year,
+            Name = year.Name,
+            StartDate = year.StartDate,
+            EndDate = year.EndDate,
+            IsActive = year.IsActive,
+            IsClosed = year.IsClosed,
+            IsCurrent = year.Year == currentYear,
+            CanEdit = true
+        };
 }

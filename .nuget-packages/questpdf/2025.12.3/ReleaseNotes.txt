@@ -1,0 +1,2 @@
+- Improved handling of semantic structure and artifact context, resolving rare edge cases.
+- Fixed an issue where element selection could appear blurry in the QuestPDF Companion App.
