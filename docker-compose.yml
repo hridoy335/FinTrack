@@ -17,10 +17,13 @@ services:
       retries: 10
 
   api:
+    # CI pushes this image on push to main/develop (see .github/workflows/build.yml)
+    image: hridoy335/fintrack:latest
     build:
       context: .
       dockerfile: Dockerfile
     container_name: fintrack-api
+    pull_policy: always
     depends_on:
       db:
         condition: service_healthy
