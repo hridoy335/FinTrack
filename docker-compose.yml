@@ -1,43 +1,52 @@
+# Client / production-style run (no local .NET or Postgres install).
+# Pulls API image from Docker Hub + official Postgres, then API auto-migrates.
+#
+#   1. Copy .env.example → .env  (optional; defaults work for demo)
+#   2. docker compose up -d
+#   3. Swagger: http://localhost:5027/swagger
+#
+# Stop: docker compose down
+# Wipe DB data: docker compose down -v
+
 services:
   db:
     image: postgres:16
     container_name: fintrack-db
     environment:
-      POSTGRES_DB: fintrackcore
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "12345"
+      POSTGRES_DB: ${POSTGRES_DB:-fintrackcore}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-12345}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - fintrack_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d fintrackcore"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
       timeout: 5s
       retries: 10
+    restart: unless-stopped
 
   api:
-    # CI pushes this image on push to main/develop (see .github/workflows/build.yml)
-    image: hridoy335/fintrack:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: fintrack-api
+    image: ${FINTRACK_IMAGE:-hridoy335/fintrack:latest}
     pull_policy: always
+    container_name: fintrack-api
     depends_on:
       db:
         condition: service_healthy
     ports:
-      - "5027:8080"
+      - "${API_PORT:-5027}:8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      # Override connection string for Docker network hostname "db"
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      Swagger__Enabled: ${SWAGGER_ENABLED:-true}
       ConnectionStrings__DefaultConnection: >-
-        Host=db;Port=5432;Database=fintrackcore;Username=postgres;Password=12345
-      Jwt__Key: FinTrackCore_Dev_Secret_Key_Change_In_Production_123456
-      Jwt__Issuer: FinTrackCore
-      Jwt__Audience: FinTrackCore
-      Cors__AllowedOrigins__0: http://localhost:4200
+        Host=db;Port=5432;Database=${POSTGRES_DB:-fintrackcore};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-12345}
+      Jwt__Key: ${JWT_KEY:-FinTrackCore_Dev_Secret_Key_Change_In_Production_123456}
+      Jwt__Issuer: ${JWT_ISSUER:-FinTrackCore}
+      Jwt__Audience: ${JWT_AUDIENCE:-FinTrackCore}
+      Cors__AllowedOrigins__0: ${CORS_ORIGIN_0:-http://localhost:4200}
+      Cors__AllowedOrigins__1: ${CORS_ORIGIN_1:-http://127.0.0.1:4200}
+    restart: unless-stopped
 
 volumes:
   fintrack_pgdata:

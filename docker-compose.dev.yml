@@ -1,0 +1,60 @@
+# Local full stack: build API + Angular from source (sibling FinTrack_Client).
+#
+#   docker compose -f docker-compose.dev.yml up --build
+#
+# App:     http://localhost:4200
+# API:     http://localhost:5027
+# Swagger: http://localhost:5027/swagger
+
+services:
+  db:
+    image: postgres:16
+    container_name: fintrack-db
+    environment:
+      POSTGRES_DB: fintrackcore
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "12345"
+    ports:
+      - "5432:5432"
+    volumes:
+      - fintrack_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fintrackcore"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    image: fintrack-api:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fintrack-api
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "5027:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: >-
+        Host=db;Port=5432;Database=fintrackcore;Username=postgres;Password=12345
+      Jwt__Key: FinTrackCore_Dev_Secret_Key_Change_In_Production_123456
+      Jwt__Issuer: FinTrackCore
+      Jwt__Audience: FinTrackCore
+      Cors__AllowedOrigins__0: http://localhost:4200
+      Cors__AllowedOrigins__1: http://127.0.0.1:4200
+
+  web:
+    image: fintrack-web:local
+    build:
+      context: ../FinTrack_Client
+      dockerfile: Dockerfile
+    container_name: fintrack-web
+    depends_on:
+      - api
+    ports:
+      - "4200:80"
+
+volumes:
+  fintrack_pgdata:
